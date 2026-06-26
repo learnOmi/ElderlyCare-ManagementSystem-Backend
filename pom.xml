@@ -26,6 +26,8 @@
         <pagehelper.boot.version>1.4.7</pagehelper.boot.version>
         <fastjson.version>2.0.53</fastjson.version>
         <oshi.version>6.8.1</oshi.version>
+        <lombok.version>1.18.30</lombok.version>
+        <aliyun-oss.version>3.17.4</aliyun-oss.version>
         <commons.io.version>2.19.0</commons.io.version>
         <poi.version>4.1.2</poi.version>
         <velocity.version>2.3</velocity.version>
@@ -197,6 +199,20 @@
                 <version>${tong.version}</version>
             </dependency>
 
+            <!-- 护理业务平台-->
+            <dependency>
+                <groupId>com.tong</groupId>
+                <artifactId>tong-nursing-platform</artifactId>
+                <version>${tong.version}</version>
+            </dependency>
+
+            <!-- OSS 对象存储 -->
+            <dependency>
+                <groupId>com.tong</groupId>
+                <artifactId>tong-oss</artifactId>
+                <version>${tong.version}</version>
+            </dependency>
+
             <!-- 核心模块-->
             <dependency>
                 <groupId>com.tong</groupId>
@@ -218,6 +234,21 @@
                 <version>${tong.version}</version>
             </dependency>
 
+            <!-- Lombok -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- 阿里云OSS -->
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>${aliyun-oss.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -228,6 +259,8 @@
         <module>ElderlyCare-quartz</module>
         <module>ElderlyCare-generator</module>
         <module>ElderlyCare-common</module>
+        <module>ElderlyCare-nursing-platform</module>
+        <module>ElderlyCare-oss</module>
     </modules>
     <packaging>pom</packaging>
 

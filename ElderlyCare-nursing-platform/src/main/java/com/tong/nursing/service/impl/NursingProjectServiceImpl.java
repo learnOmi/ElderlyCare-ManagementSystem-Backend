@@ -10,19 +10,19 @@ import com.tong.nursing.service.INursingProjectService;
 
 /**
  * 护理项目Service业务层处理
- * 
+ *
  * @author Tong
  * @date 2026-06-23
  */
 @Service
-public class NursingProjectServiceImpl implements INursingProjectService 
+public class NursingProjectServiceImpl implements INursingProjectService
 {
     @Autowired
     private NursingProjectMapper nursingProjectMapper;
 
     /**
      * 查询护理项目
-     * 
+     *
      * @param id 护理项目主键
      * @return 护理项目
      */
@@ -34,7 +34,7 @@ public class NursingProjectServiceImpl implements INursingProjectService
 
     /**
      * 查询护理项目列表
-     * 
+     *
      * @param nursingProject 护理项目
      * @return 护理项目
      */
@@ -46,7 +46,7 @@ public class NursingProjectServiceImpl implements INursingProjectService
 
     /**
      * 新增护理项目
-     * 
+     *
      * @param nursingProject 护理项目
      * @return 结果
      */
@@ -59,7 +59,7 @@ public class NursingProjectServiceImpl implements INursingProjectService
 
     /**
      * 修改护理项目
-     * 
+     *
      * @param nursingProject 护理项目
      * @return 结果
      */
@@ -72,7 +72,7 @@ public class NursingProjectServiceImpl implements INursingProjectService
 
     /**
      * 批量删除护理项目
-     * 
+     *
      * @param ids 需要删除的护理项目主键
      * @return 结果
      */
@@ -84,7 +84,7 @@ public class NursingProjectServiceImpl implements INursingProjectService
 
     /**
      * 删除护理项目信息
-     * 
+     *
      * @param id 护理项目主键
      * @return 结果
      */

@@ -1,96 +1,205 @@
-<p align="center">
-	<img alt="logo" src="https://oscimg.oschina.net/oscnet/up-d3d0a9303e11d522a06cd263f3079027715.png">
-</p>
-<h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">RuoYi v3.8.9</h1>
-<h4 align="center">基于SpringBoot+Vue前后端分离的Java快速开发框架</h4>
-<p align="center">
-	<a href="https://gitee.com/y_project/RuoYi-Vue/stargazers"><img src="https://gitee.com/y_project/RuoYi-Vue/badge/star.svg?theme=dark"></a>
-	<a href="https://gitee.com/y_project/RuoYi-Vue"><img src="https://img.shields.io/badge/RuoYi-v3.8.9-brightgreen.svg"></a>
-	<a href="https://gitee.com/y_project/RuoYi-Vue/blob/master/LICENSE"><img src="https://img.shields.io/github/license/mashape/apistatus.svg"></a>
-</p>
+<br />
 
-## 平台简介
+***
 
-若依是一套全部开源的快速开发平台，毫无保留给个人及企业免费使用。
+# 中州养老管理系统（ElderlyCare）
 
-* 前端采用Vue、Element UI。
-* 后端采用Spring Boot、Spring Security、Redis & Jwt。
-* 权限认证使用Jwt，支持多终端认证系统。
-* 支持加载动态权限菜单，多方式轻松权限控制。
-* 高效率开发，使用代码生成器可以一键生成前后端代码。
-* 提供了技术栈（[Vue3](https://v3.cn.vuejs.org) [Element Plus](https://element-plus.org/zh-CN) [Vite](https://cn.vitejs.dev)）版本[RuoYi-Vue3](https://gitcode.com/yangzongzhuan/RuoYi-Vue3)，保持同步更新。
-* 提供了单应用版本[RuoYi-Vue-fast](https://gitcode.com/yangzongzhuan/RuoYi-Vue-fast)，Oracle版本[RuoYi-Vue-Oracle](https://gitcode.com/yangzongzhuan/RuoYi-Vue-Oracle)，保持同步更新。
-* 不分离版本，请移步[RuoYi](https://gitee.com/y_project/RuoYi)，微服务版本，请移步[RuoYi-Cloud](https://gitee.com/y_project/RuoYi-Cloud)
-* 阿里云折扣场：[点我进入](http://aly.ruoyi.vip)，腾讯云秒杀场：[点我进入](http://txy.ruoyi.vip)&nbsp;&nbsp;
+## 项目简介
 
-## 内置功能
+中州养老管理系统是基于RuoYi-Vue框架开发的养老院综合管理平台，旨在为养老机构提供全方位的信息化管理解决方案。系统参考codeRef完整功能设计，涵盖基础设施管理、护理服务管理、老人档案管理、入住管理、健康评估、护理排班、告警管理、合同管理、预约管理等核心业务模块。
 
-1.  用户管理：用户是系统操作者，该功能主要完成系统用户配置。
-2.  部门管理：配置系统组织机构（公司、部门、小组），树结构展现支持数据权限。
-3.  岗位管理：配置系统用户所属担任职务。
-4.  菜单管理：配置系统菜单，操作权限，按钮权限标识等。
-5.  角色管理：角色菜单权限分配、设置角色按机构进行数据范围权限划分。
-6.  字典管理：对系统中经常使用的一些较为固定的数据进行维护。
-7.  参数管理：对系统动态配置常用参数。
-8.  通知公告：系统通知公告信息发布维护。
-9.  操作日志：系统正常操作日志记录和查询；系统异常信息日志记录和查询。
-10. 登录日志：系统登录日志记录查询包含登录异常。
-11. 在线用户：当前系统中活跃用户状态监控。
-12. 定时任务：在线（添加、修改、删除)任务调度包含执行结果日志。
-13. 代码生成：前后端代码的生成（java、html、xml、sql）支持CRUD下载 。
-14. 系统接口：根据业务代码自动生成相关的api接口文档。
-15. 服务监控：监视当前系统CPU、内存、磁盘、堆栈等相关信息。
-16. 缓存监控：对系统的缓存信息查询，命令统计等。
-17. 在线构建器：拖动表单元素生成相应的HTML代码。
-18. 连接池监视：监视当前系统数据库连接池状态，可进行分析SQL找出系统性能瓶颈。
+## 项目模块结构
 
-## 在线体验
+```
+ElderlyCare (父工程)
+├── ElderlyCare-common              // 通用模块（工具类、常量、异常等）
+├── ElderlyCare-framework           // 框架模块（安全、配置、拦截器等）
+├── ElderlyCare-system              // 系统模块（用户、角色、菜单、字典等）
+├── ElderlyCare-quartz              // 定时任务模块
+├── ElderlyCare-generator           // 代码生成模块
+├── ElderlyCare-admin               // 管理后台模块（Controller、启动类）
+├── ElderlyCare-oss                 // 对象存储模块（阿里云OSS）
+└── ElderlyCare-nursing-platform    // 护理业务平台模块（单模块，内含所有业务）
+```
 
-- admin/admin123  
-- 陆陆续续收到一些打赏，为了更好的体验已用于演示服务器升级。谢谢各位小伙伴。
+## 技术栈
 
-演示地址：http://vue.ruoyi.vip  
-文档地址：http://doc.ruoyi.vip
+- **后端框架**: Spring Boot 2.5.x + Spring Security + JWT
+- **持久层**: MyBatis + Druid 数据源 + PageHelper分页
+- **缓存**: Redis
+- **数据库**: MySQL 8.x
+- **工具库**: Lombok 1.18.30、Apache Commons、FastJSON2
+- **对象存储**: 阿里云 OSS SDK 3.17.4
+- **接口文档**: Swagger3 (SpringFox)
+- **代码规范**: 统一注释规范、常量分层管理
 
-## 演示图
+## 业务模块总览（基于codeRef）
 
-<table>
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/cd1f90be5f2684f4560c9519c0f2a232ee8.jpg"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/1cbcf0e6f257c7d3a063c0e3f2ff989e4b3.jpg"/></td>
-    </tr>
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-8074972883b5ba0622e13246738ebba237a.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-9f88719cdfca9af2e58b352a20e23d43b12.png"/></td>
-    </tr>
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-39bf2584ec3a529b0d5a3b70d15c9b37646.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-936ec82d1f4872e1bc980927654b6007307.png"/></td>
-    </tr>
-	<tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-b2d62ceb95d2dd9b3fbe157bb70d26001e9.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-d67451d308b7a79ad6819723396f7c3d77a.png"/></td>
-    </tr>	 
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/5e8c387724954459291aafd5eb52b456f53.jpg"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/644e78da53c2e92a95dfda4f76e6d117c4b.jpg"/></td>
-    </tr>
-	<tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-8370a0d02977eebf6dbf854c8450293c937.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-49003ed83f60f633e7153609a53a2b644f7.png"/></td>
-    </tr>
-	<tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-d4fe726319ece268d4746602c39cffc0621.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-c195234bbcd30be6927f037a6755e6ab69c.png"/></td>
-    </tr>
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/b6115bc8c31de52951982e509930b20684a.jpg"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-5e4daac0bb59612c5038448acbcef235e3a.png"/></td>
-    </tr>
-</table>
+| 业务域 | 包含功能 | 表前缀 | 状态 |
+|--------|----------|--------|------|
+| 基础设施 | 楼层、房型、房间、床位、设备 | nursing_ | 设计完成 |
+| 护理服务 | 护理项目、护理计划、护理等级、项目计划关联 | nursing_ | 已实现 |
+| 老人档案 | 老人信息、家属信息、老人家属关联 | nursing_ | 设计完成 |
+| 入住管理 | 入住申请、入住审核、退住管理 | nursing_ | 设计完成 |
+| 健康评估 | 评估记录、评分管理、建议等级 | nursing_ | 设计完成 |
+| 护理排班 | 排班计划、执行记录、状态流转 | nursing_ | 设计完成 |
+| 告警管理 | 告警规则、告警数据、告警处理 | nursing_ | 设计完成 |
+| 合同管理 | 合同签订、合同变更、合同终止 | nursing_ | 设计完成 |
+| 预约管理 | 来访预约、入住预约、参观预约 | nursing_ | 设计完成 |
 
+## 数据库表清单（nursing_ 前缀，共19张）
 
-## 若依前后端分离交流群
+| 序号 | 表名 | 说明 | 所属模块 |
+|------|------|------|----------|
+| 1 | nursing_floor | 楼层表 | 基础设施 |
+| 2 | nursing_room_type | 房型表 | 基础设施 |
+| 3 | nursing_room | 房间表 | 基础设施 |
+| 4 | nursing_bed | 床位表 | 基础设施 |
+| 5 | nursing_device | 设备表 | 基础设施 |
+| 6 | nursing_project | 护理项目表 | 护理服务 |
+| 7 | nursing_plan | 护理计划表 | 护理服务 |
+| 8 | nursing_level | 护理等级表 | 护理服务 |
+| 9 | nursing_project_plan | 护理项目计划关联表 | 护理服务 |
+| 10 | nursing_elder | 老人信息表 | 老人档案 |
+| 11 | nursing_family | 家属信息表 | 老人档案 |
+| 12 | nursing_elder_family | 老人家属关联表 | 老人档案 |
+| 13 | nursing_check_in | 入住申请表 | 入住管理 |
+| 14 | nursing_health_assessment | 健康评估表 | 健康评估 |
+| 15 | nursing_arrange | 护理排班表 | 护理排班 |
+| 16 | nursing_alert_rule | 告警规则表 | 告警管理 |
+| 17 | nursing_alert_data | 告警数据表 | 告警管理 |
+| 18 | nursing_contract | 合同表 | 合同管理 |
+| 19 | nursing_reservation | 预约表 | 预约管理 |
 
-QQ群： [![加入QQ群](https://img.shields.io/badge/已满-937441-blue.svg)](https://jq.qq.com/?_wv=1027&k=5bVB1og) [![加入QQ群](https://img.shields.io/badge/已满-887144332-blue.svg)](https://jq.qq.com/?_wv=1027&k=5eiA4DH) [![加入QQ群](https://img.shields.io/badge/已满-180251782-blue.svg)](https://jq.qq.com/?_wv=1027&k=5AxMKlC) [![加入QQ群](https://img.shields.io/badge/已满-104180207-blue.svg)](https://jq.qq.com/?_wv=1027&k=51G72yr) [![加入QQ群](https://img.shields.io/badge/已满-186866453-blue.svg)](https://jq.qq.com/?_wv=1027&k=VvjN2nvu) [![加入QQ群](https://img.shields.io/badge/已满-201396349-blue.svg)](https://jq.qq.com/?_wv=1027&k=5vYAqA05) [![加入QQ群](https://img.shields.io/badge/已满-101456076-blue.svg)](https://jq.qq.com/?_wv=1027&k=kOIINEb5) [![加入QQ群](https://img.shields.io/badge/已满-101539465-blue.svg)](https://jq.qq.com/?_wv=1027&k=UKtX5jhs) [![加入QQ群](https://img.shields.io/badge/已满-264312783-blue.svg)](https://jq.qq.com/?_wv=1027&k=EI9an8lJ) [![加入QQ群](https://img.shields.io/badge/已满-167385320-blue.svg)](https://jq.qq.com/?_wv=1027&k=SWCtLnMz) [![加入QQ群](https://img.shields.io/badge/已满-104748341-blue.svg)](https://jq.qq.com/?_wv=1027&k=96Dkdq0k) [![加入QQ群](https://img.shields.io/badge/已满-160110482-blue.svg)](https://jq.qq.com/?_wv=1027&k=0fsNiYZt) [![加入QQ群](https://img.shields.io/badge/已满-170801498-blue.svg)](https://jq.qq.com/?_wv=1027&k=7xw4xUG1) [![加入QQ群](https://img.shields.io/badge/已满-108482800-blue.svg)](https://jq.qq.com/?_wv=1027&k=eCx8eyoJ) [![加入QQ群](https://img.shields.io/badge/已满-101046199-blue.svg)](https://jq.qq.com/?_wv=1027&k=SpyH2875) [![加入QQ群](https://img.shields.io/badge/已满-136919097-blue.svg)](https://jq.qq.com/?_wv=1027&k=tKEt51dz) [![加入QQ群](https://img.shields.io/badge/已满-143961921-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=0vBbSb0ztbBgVtn3kJS-Q4HUNYwip89G&authKey=8irq5PhutrZmWIvsUsklBxhj57l%2F1nOZqjzigkXZVoZE451GG4JHPOqW7AW6cf0T&noverify=0&group_code=143961921) [![加入QQ群](https://img.shields.io/badge/已满-174951577-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=ZFAPAbp09S2ltvwrJzp7wGlbopsc0rwi&authKey=HB2cxpxP2yspk%2Bo3WKTBfktRCccVkU26cgi5B16u0KcAYrVu7sBaE7XSEqmMdFQp&noverify=0&group_code=174951577) [![加入QQ群](https://img.shields.io/badge/已满-161281055-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=Fn2aF5IHpwsy8j6VlalNJK6qbwFLFHat&authKey=uyIT%2B97x2AXj3odyXpsSpVaPMC%2Bidw0LxG5MAtEqlrcBcWJUA%2FeS43rsF1Tg7IRJ&noverify=0&group_code=161281055) [![加入QQ群](https://img.shields.io/badge/已满-138988063-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=XIzkm_mV2xTsUtFxo63bmicYoDBA6Ifm&authKey=dDW%2F4qsmw3x9govoZY9w%2FoWAoC4wbHqGal%2BbqLzoS6VBarU8EBptIgPKN%2FviyC8j&noverify=0&group_code=138988063) [![加入QQ群](https://img.shields.io/badge/已满-151450850-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=DkugnCg68PevlycJSKSwjhFqfIgrWWwR&authKey=pR1Pa5lPIeGF%2FFtIk6d%2FGB5qFi0EdvyErtpQXULzo03zbhopBHLWcuqdpwY241R%2F&noverify=0&group_code=151450850) [![加入QQ群](https://img.shields.io/badge/已满-224622315-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=F58bgRa-Dp-rsQJThiJqIYv8t4-lWfXh&authKey=UmUs4CVG5OPA1whvsa4uSespOvyd8%2FAr9olEGaWAfdLmfKQk%2FVBp2YU3u2xXXt76&noverify=0&group_code=224622315) [![加入QQ群](https://img.shields.io/badge/已满-287842588-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=Nxb2EQ5qozWa218Wbs7zgBnjLSNk_tVT&authKey=obBKXj6SBKgrFTJZx0AqQnIYbNOvBB2kmgwWvGhzxR67RoRr84%2Bus5OadzMcdJl5&noverify=0&group_code=287842588) [![加入QQ群](https://img.shields.io/badge/已满-187944233-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=numtK1M_I4eVd2Gvg8qtbuL8JgX42qNh&authKey=giV9XWMaFZTY%2FqPlmWbkB9g3fi0Ev5CwEtT9Tgei0oUlFFCQLDp4ozWRiVIzubIm&noverify=0&group_code=187944233) [![加入QQ群](https://img.shields.io/badge/228578329-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=G6r5KGCaa3pqdbUSXNIgYloyb8e0_L0D&authKey=4w8tF1eGW7%2FedWn%2FHAypQksdrML%2BDHolQSx7094Agm7Luakj9EbfPnSTxSi2T1LQ&noverify=0&group_code=228578329) 点击按钮入群。#   E l d e r l y C a r e - M a n a g e m e n t S y s t e m - B a c k e n d  
- 
+## 开发路线图
+
+### 第一阶段：基础架构搭建（已完成 ✅）
+
+**目标**: 搭建项目基础架构，引入必要的开发工具和基础设施，为后续业务开发做准备
+
+**完成内容**:
+
+| 序号 | 功能组件 | 实现方式 | 状态 |
+|------|----------|----------|------|
+| 1 | Lombok 集成 | 父pom引入lombok依赖，实体类使用@Data/@Setter/@Getter等注解简化代码 | ✅ 完成 |
+| 2 | ElderlyCare-oss 模块 | 创建独立的OSS模块，三层架构：配置属性类 + 文件存储服务 + 自动配置类 | ✅ 完成 |
+| 3 | 阿里云OSS集成 | 集成aliyun-sdk-oss 3.17.4，实现文件上传与删除，替换CommonController原本地上传 | ✅ 完成 |
+| 4 | ElderlyCare-nursing-platform 模块 | 创建护理业务平台独立模块，迁移护理项目/计划/等级/关联代码 | ✅ 完成 |
+| 5 | 护理业务实体改造 | 4个护理实体类全部使用@Data注解简化，保留Swagger注解和Excel注解 | ✅ 完成 |
+| 6 | MyBatis Mapper扫描 | 利用@MapperScan("com.tong.**.mapper")通配扫描，自动覆盖所有业务模块 | ✅ 完成 |
+| 7 | 数据库初始化脚本 | 编写19张nursing_*业务表 + 完整菜单数据 + 4组字典数据 | ✅ 完成 |
+| 8 | 多模块依赖管理 | 父pom dependencyManagement统一管理所有子模块版本，解决版本缺失问题 | ✅ 完成 |
+
+**核心组件说明**:
+
+1. **AliOssConfigProperties** - OSS配置属性类
+   - 位置: `ElderlyCare-oss/src/main/java/com/tong/oss/properties/AliOssConfigProperties.java`
+   - 功能: 通过`@ConfigurationProperties(prefix = "oss.aliyun")`读取配置
+   - 配置项: endpoint、accessKeyId、accessKeySecret、bucketName、domain
+
+2. **OSSAliyunFileStorageService** - OSS文件存储服务
+   - 位置: `ElderlyCare-oss/src/main/java/com/tong/oss/client/OSSAliyunFileStorageService.java`
+   - 功能: 封装文件上传(`store`)、文件删除(`delete`)
+   - 状态管理: 无状态服务，每次调用独立操作OSS
+
+3. **OssAliyunAutoConfig** - OSS客户端自动配置
+   - 位置: `ElderlyCare-oss/src/main/java/com/tong/oss/config/OssAliyunAutoConfig.java`
+   - 功能: Spring启动时自动创建OSS客户端Bean，检查并创建存储桶
+   - 状态管理: Spring单例Bean，应用生命周期内复用同一客户端
+
+**第一阶段难点与解决方案**:
+1. **多模块依赖版本问题** - 在父pom的dependencyManagement中统一声明所有子模块版本，子模块无需指定version
+2. **模块解耦与依赖方向** - nursing-platform依赖common，admin依赖nursing-platform，方向正确无循环
+3. **OSS自动配置设计** - 采用三层架构（配置属性 + 服务类 + 自动配置），符合Spring Boot自动装配理念
+4. **业务表命名规范** - 所有业务表统一使用nursing_前缀，避免与系统表(sys_)混淆
+
+***
+
+### 第二阶段：基础数据管理（规划中）
+
+**目标**: 实现养老院基础设施数据管理，为后续老人入住等业务奠定基础
+
+**计划实现组件**:
+- **NursingFloor** - 楼层管理（CRUD + 列表查询）
+- **NursingRoomType** - 房型管理（CRUD + 全部列表）
+- **NursingRoom** - 房间管理（CRUD + 按楼层查询）
+- **NursingBed** - 床位管理（CRUD + 按房间查询 + 状态流转）
+- **NursingDevice** - 设备管理（CRUD + 绑定床位）
+
+**实现方式**:
+- 每个功能完整的Controller + Service + Mapper + Domain四层架构
+- 继承BaseEntity，统一审计字段
+- 使用Lombok @Data简化实体类
+- Mapper XML编写SQL，支持分页查询
+
+**状态管理**:
+- 床位状态：空闲 → 已入住 / 维修中 / 预订（状态机流转）
+- 设备状态：离线 / 在线 / 故障
+
+**难点**:
+1. 楼层-房间-床位三级层级关系的级联查询与删除校验
+2. 床位状态流转的业务规则约束（如已入住床位不能直接删除）
+
+***
+
+### 第三阶段：老人档案与入住管理（规划中）
+
+**目标**: 建立老人完整档案，实现入住全流程管理
+
+**计划实现**:
+- 老人信息管理（基本信息、护理等级、床位关联）
+- 家属信息管理（多家属、紧急联系人）
+- 老人家属关联管理
+- 入住申请、审核、入住、退住全流程
+- 入住状态流转（待审核 → 已审核 → 已入住 → 已退住）
+
+***
+
+### 第四阶段：护理服务与排班（规划中）
+
+**目标**: 完善护理服务体系，实现护理排班与执行跟踪
+
+**计划实现**:
+- 健康评估管理（多维度评分、建议护理等级）
+- 护理排班管理（按老人/项目/护理员排班）
+- 排班执行记录（待执行 → 执行中 → 已执行/已取消）
+- 护理项目与计划的关联配置（已具备基础）
+
+***
+
+### 第五阶段：告警与设备管理（规划中）
+
+**目标**: 建立智能告警体系，实现设备数据接入与告警
+
+**计划实现**:
+- 告警规则配置（多种告警类型、阈值设置、通知方式）
+- 告警数据管理（告警产生、处理流程、处理记录）
+- 设备管理与绑定
+- 智能床位数据接入预留
+
+***
+
+### 第六阶段：合同与预约管理（规划中）
+
+**目标**: 完善合同与预约业务，形成完整的客户管理闭环
+
+**计划实现**:
+- 合同管理（签订、变更、终止、到期提醒）
+- 预约管理（来访预约、入住预约、参观预约）
+- 预约状态流转与确认机制
+
+***
+
+### 第七阶段：报表统计与系统完善（规划中）
+
+**目标**: 数据可视化与系统整体优化完善
+
+**计划实现**:
+- 入住率统计报表
+- 护理工作量统计
+- 告警数据分析
+- 仪表盘数据整合
+- 系统性能优化
+
+***
+

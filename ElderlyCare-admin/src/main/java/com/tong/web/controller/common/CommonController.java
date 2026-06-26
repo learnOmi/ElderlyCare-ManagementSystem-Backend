@@ -2,6 +2,7 @@ package com.tong.web.controller.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -17,13 +18,12 @@ import com.tong.common.config.RuoYiConfig;
 import com.tong.common.constant.Constants;
 import com.tong.common.core.domain.AjaxResult;
 import com.tong.common.utils.StringUtils;
-import com.tong.common.utils.file.FileUploadUtils;
 import com.tong.common.utils.file.FileUtils;
-import com.tong.framework.config.ServerConfig;
+import com.tong.oss.client.OSSAliyunFileStorageService;
 
 /**
  * 通用请求处理
- * 
+ *
  * @author ruoyi
  */
 @RestController
@@ -32,16 +32,16 @@ public class CommonController
 {
     private static final Logger log = LoggerFactory.getLogger(CommonController.class);
 
-    @Autowired
-    private ServerConfig serverConfig;
-
     private static final String FILE_DELIMETER = ",";
+
+    @Autowired
+    private OSSAliyunFileStorageService fileStorageService;
 
     /**
      * 通用下载请求
-     * 
+     *
      * @param fileName 文件名称
-     * @param delete 是否删除
+     * @param delete   是否删除
      */
     @GetMapping("/download")
     public void fileDownload(String fileName, Boolean delete, HttpServletResponse response, HttpServletRequest request)
@@ -70,55 +70,66 @@ public class CommonController
     }
 
     /**
-     * 通用上传请求（单个）
+     * 通用上传请求（单个文件，上传到阿里云 OSS）
      */
     @PostMapping("/upload")
-    public AjaxResult uploadFile(MultipartFile file) throws Exception
+    public AjaxResult uploadFile(MultipartFile file)
     {
         try
         {
-            // 上传文件路径
-            String filePath = RuoYiConfig.getUploadPath();
-            // 上传并返回新文件名称
-            String fileName = FileUploadUtils.upload(filePath, file);
-            String url = serverConfig.getUrl() + fileName;
+            // 生成唯一文件名：UUID.后缀
+            String originalFilename = file.getOriginalFilename();
+            String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            String objectName = UUID.randomUUID().toString() + extension;
+
+            // 上传到阿里云 OSS
+            String url = fileStorageService.store(objectName, file.getInputStream());
+
+            if (url == null)
+            {
+                return AjaxResult.error("文件上传失败，请检查 OSS 配置");
+            }
+
             AjaxResult ajax = AjaxResult.success();
             ajax.put("url", url);
-            ajax.put("fileName", fileName);
-            ajax.put("newFileName", FileUtils.getName(fileName));
-            ajax.put("originalFilename", file.getOriginalFilename());
+            ajax.put("fileName", url);
+            ajax.put("newFileName", objectName);
+            ajax.put("originalFilename", originalFilename);
             return ajax;
         }
         catch (Exception e)
         {
+            log.error("文件上传异常", e);
             return AjaxResult.error(e.getMessage());
         }
     }
 
     /**
-     * 通用上传请求（多个）
+     * 通用上传请求（多个文件，上传到阿里云 OSS）
      */
     @PostMapping("/uploads")
-    public AjaxResult uploadFiles(List<MultipartFile> files) throws Exception
+    public AjaxResult uploadFiles(List<MultipartFile> files)
     {
         try
         {
-            // 上传文件路径
-            String filePath = RuoYiConfig.getUploadPath();
-            List<String> urls = new ArrayList<String>();
-            List<String> fileNames = new ArrayList<String>();
-            List<String> newFileNames = new ArrayList<String>();
-            List<String> originalFilenames = new ArrayList<String>();
+            List<String> urls = new ArrayList<>();
+            List<String> fileNames = new ArrayList<>();
+            List<String> newFileNames = new ArrayList<>();
+            List<String> originalFilenames = new ArrayList<>();
+
             for (MultipartFile file : files)
             {
-                // 上传并返回新文件名称
-                String fileName = FileUploadUtils.upload(filePath, file);
-                String url = serverConfig.getUrl() + fileName;
+                String originalFilename = file.getOriginalFilename();
+                String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                String objectName = UUID.randomUUID().toString() + extension;
+
+                String url = fileStorageService.store(objectName, file.getInputStream());
                 urls.add(url);
-                fileNames.add(fileName);
-                newFileNames.add(FileUtils.getName(fileName));
-                originalFilenames.add(file.getOriginalFilename());
+                fileNames.add(url);
+                newFileNames.add(objectName);
+                originalFilenames.add(originalFilename);
             }
+
             AjaxResult ajax = AjaxResult.success();
             ajax.put("urls", StringUtils.join(urls, FILE_DELIMETER));
             ajax.put("fileNames", StringUtils.join(fileNames, FILE_DELIMETER));
@@ -128,6 +139,7 @@ public class CommonController
         }
         catch (Exception e)
         {
+            log.error("批量文件上传异常", e);
             return AjaxResult.error(e.getMessage());
         }
     }

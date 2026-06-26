@@ -1,19 +1,19 @@
-package com.tong.nursing.service;
+package com.tong.nursing.mapper;
 
 import java.util.List;
 import com.tong.nursing.domain.NursingProject;
 
 /**
- * 护理项目Service接口
- * 
+ * 护理项目Mapper接口
+ *
  * @author Tong
  * @date 2026-06-23
  */
-public interface INursingProjectService 
+public interface NursingProjectMapper
 {
     /**
      * 查询护理项目
-     * 
+     *
      * @param id 护理项目主键
      * @return 护理项目
      */
@@ -21,7 +21,7 @@ public interface INursingProjectService
 
     /**
      * 查询护理项目列表
-     * 
+     *
      * @param nursingProject 护理项目
      * @return 护理项目集合
      */
@@ -29,7 +29,7 @@ public interface INursingProjectService
 
     /**
      * 新增护理项目
-     * 
+     *
      * @param nursingProject 护理项目
      * @return 结果
      */
@@ -37,25 +37,25 @@ public interface INursingProjectService
 
     /**
      * 修改护理项目
-     * 
+     *
      * @param nursingProject 护理项目
      * @return 结果
      */
     public int updateNursingProject(NursingProject nursingProject);
 
     /**
-     * 批量删除护理项目
-     * 
-     * @param ids 需要删除的护理项目主键集合
-     * @return 结果
-     */
-    public int deleteNursingProjectByIds(Long[] ids);
-
-    /**
-     * 删除护理项目信息
-     * 
+     * 删除护理项目
+     *
      * @param id 护理项目主键
      * @return 结果
      */
     public int deleteNursingProjectById(Long id);
+
+    /**
+     * 批量删除护理项目
+     *
+     * @param ids 需要删除的数据主键集合
+     * @return 结果
+     */
+    public int deleteNursingProjectByIds(Long[] ids);
 }

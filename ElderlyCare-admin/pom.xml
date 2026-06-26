@@ -37,6 +37,13 @@
             <version>1.6.2</version>
         </dependency>
 
+        <!-- 引入knife4j -->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+
          <!-- Mysql驱动包 -->
         <dependency>
             <groupId>mysql</groupId>
@@ -59,6 +66,18 @@
         <dependency>
             <groupId>com.tong</groupId>
             <artifactId>tong-generator</artifactId>
+        </dependency>
+
+        <!-- 护理业务平台 -->
+        <dependency>
+            <groupId>com.tong</groupId>
+            <artifactId>tong-nursing-platform</artifactId>
+        </dependency>
+
+        <!-- OSS 对象存储 -->
+        <dependency>
+            <groupId>com.tong</groupId>
+            <artifactId>tong-oss</artifactId>
         </dependency>
 
     </dependencies>

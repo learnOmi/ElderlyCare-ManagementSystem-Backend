@@ -46,3 +46,7 @@ nbdist/
 !*/build/*.java
 !*/build/*.html
 !*/build/*.xml
+
+/.trae/
+codeRef/
+ElderlyCare-admin/src/main/resources/application-oss.yml
