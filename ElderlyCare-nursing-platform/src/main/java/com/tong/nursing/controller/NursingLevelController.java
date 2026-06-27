@@ -12,23 +12,29 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.github.pagehelper.PageInfo;
 import com.tong.common.annotation.Log;
+import com.tong.common.constant.HttpStatus;
 import com.tong.common.core.controller.BaseController;
-import com.tong.common.core.domain.AjaxResult;
 import com.tong.common.enums.BusinessType;
 import com.tong.nursing.domain.NursingLevel;
 import com.tong.nursing.service.INursingLevelService;
 import com.tong.common.utils.poi.ExcelUtil;
+import com.tong.common.core.domain.R;
 import com.tong.common.core.page.TableDataInfo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 护理等级Controller
- * 
+ *
  * @author Tong
  * @date 2026-06-25
  */
+@Api(tags = "护理等级管理")
 @RestController
-@RequestMapping("/nursing/nursinglevel")
+@RequestMapping("/nursing/level")
 public class NursingLevelController extends BaseController
 {
     @Autowired
@@ -37,20 +43,28 @@ public class NursingLevelController extends BaseController
     /**
      * 查询护理等级列表
      */
-    @PreAuthorize("@ss.hasPermi('nursing:nursinglevel:list')")
+    @PreAuthorize("@ss.hasPermi('nursing:level:list')")
+    @ApiOperation(value = "查询护理等级列表", notes = "分页返回护理等级列表")
     @GetMapping("/list")
-    public TableDataInfo list(NursingLevel nursingLevel)
+    public TableDataInfo<NursingLevel> list(NursingLevel nursingLevel)
     {
         startPage();
         List<NursingLevel> list = nursingLevelService.selectNursingLevelList(nursingLevel);
-        return getDataTable(list);
+        // 手动构造泛型 TableDataInfo，避免父类非泛型版本导致的类型不匹配
+        TableDataInfo<NursingLevel> rspData = new TableDataInfo<>();
+        rspData.setCode(HttpStatus.SUCCESS);
+        rspData.setMsg("查询成功");
+        rspData.setRows(list);
+        rspData.setTotal(new PageInfo<>(list).getTotal());
+        return rspData;
     }
 
     /**
      * 导出护理等级列表
      */
-    @PreAuthorize("@ss.hasPermi('nursing:nursinglevel:export')")
+    @PreAuthorize("@ss.hasPermi('nursing:level:export')")
     @Log(title = "护理等级", businessType = BusinessType.EXPORT)
+    @ApiOperation("导出护理等级列表")
     @PostMapping("/export")
     public void export(HttpServletResponse response, NursingLevel nursingLevel)
     {
@@ -62,43 +76,52 @@ public class NursingLevelController extends BaseController
     /**
      * 获取护理等级详细信息
      */
-    @PreAuthorize("@ss.hasPermi('nursing:nursinglevel:query')")
+    @PreAuthorize("@ss.hasPermi('nursing:level:query')")
+    @ApiOperation(value = "获取护理等级详细信息", notes = "返回单个护理等级对象详情")
+    @ApiImplicitParam(name = "id", value = "护理等级ID", required = true, dataType = "Integer", paramType = "path")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Integer id)
+    public R<NursingLevel> getInfo(@PathVariable("id") Integer id)
     {
-        return success(nursingLevelService.selectNursingLevelById(id));
+        return R.ok(nursingLevelService.selectNursingLevelById(id));
     }
 
     /**
      * 新增护理等级
      */
-    @PreAuthorize("@ss.hasPermi('nursing:nursinglevel:add')")
+    @PreAuthorize("@ss.hasPermi('nursing:level:add')")
     @Log(title = "护理等级", businessType = BusinessType.INSERT)
+    @ApiOperation(value = "新增护理等级", notes = "返回操作结果状态")
     @PostMapping
-    public AjaxResult add(@RequestBody NursingLevel nursingLevel)
+    public R<Void> add(@RequestBody NursingLevel nursingLevel)
     {
-        return toAjax(nursingLevelService.insertNursingLevel(nursingLevel));
+        int rows = nursingLevelService.insertNursingLevel(nursingLevel);
+        return rows > 0 ? R.ok() : R.fail();
     }
 
     /**
      * 修改护理等级
      */
-    @PreAuthorize("@ss.hasPermi('nursing:nursinglevel:edit')")
+    @PreAuthorize("@ss.hasPermi('nursing:level:edit')")
     @Log(title = "护理等级", businessType = BusinessType.UPDATE)
+    @ApiOperation(value = "修改护理等级", notes = "返回操作结果状态")
     @PutMapping
-    public AjaxResult edit(@RequestBody NursingLevel nursingLevel)
+    public R<Void> edit(@RequestBody NursingLevel nursingLevel)
     {
-        return toAjax(nursingLevelService.updateNursingLevel(nursingLevel));
+        int rows = nursingLevelService.updateNursingLevel(nursingLevel);
+        return rows > 0 ? R.ok() : R.fail();
     }
 
     /**
      * 删除护理等级
      */
-    @PreAuthorize("@ss.hasPermi('nursing:nursinglevel:remove')")
+    @PreAuthorize("@ss.hasPermi('nursing:level:remove')")
     @Log(title = "护理等级", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Integer[] ids)
+    @ApiOperation(value = "删除护理等级", notes = "返回操作结果状态")
+    @ApiImplicitParam(name = "ids", value = "护理等级ID数组", required = true, dataType = "Integer[]", paramType = "path")
+    @DeleteMapping("/{ids}")
+    public R<Void> remove(@PathVariable Integer[] ids)
     {
-        return toAjax(nursingLevelService.deleteNursingLevelByIds(ids));
+        int rows = nursingLevelService.deleteNursingLevelByIds(ids);
+        return rows > 0 ? R.ok() : R.fail();
     }
 }

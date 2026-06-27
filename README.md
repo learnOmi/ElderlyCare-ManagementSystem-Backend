@@ -115,30 +115,97 @@ ElderlyCare (父工程)
 
 ***
 
-### 第二阶段：基础数据管理（规划中）
+### 第二阶段：基础数据管理（已完成 ✅）
 
 **目标**: 实现养老院基础设施数据管理，为后续老人入住等业务奠定基础
 
-**计划实现组件**:
-- **NursingFloor** - 楼层管理（CRUD + 列表查询）
-- **NursingRoomType** - 房型管理（CRUD + 全部列表）
-- **NursingRoom** - 房间管理（CRUD + 按楼层查询）
-- **NursingBed** - 床位管理（CRUD + 按房间查询 + 状态流转）
-- **NursingDevice** - 设备管理（CRUD + 绑定床位）
+**完成内容**:
+
+| 序号 | 功能组件 | 实现方式 | 状态 |
+|------|----------|----------|------|
+| 1 | 楼层管理 (NursingFloor) | Controller + Service + Mapper + Domain 四层架构，支持 CRUD 和列表查询 | ✅ 完成 |
+| 2 | 房型管理 (NursingRoomType) | Controller + Service + Mapper + Domain 四层架构，支持 CRUD 和全部列表 | ✅ 完成 |
+| 3 | 房间管理 (NursingRoom) | Controller + Service + Mapper + Domain 四层架构，支持按楼层ID筛选查询 | ✅ 完成 |
+| 4 | 床位管理 (NursingBed) | Controller + Service + Mapper + Domain 四层架构，支持按房间ID筛选和状态流转 | ✅ 完成 |
+| 5 | 设备管理 (NursingDevice) | Controller + Service + Mapper + Domain 四层架构，支持绑定床位和状态管理 | ✅ 完成 |
+| 6 | Swagger响应泛型改造 | Controller返回类型改为R<T>和TableDataInfo<T>，Swagger正确解析响应结构 | ✅ 完成 |
+| 7 | 初始化数据脚本 | nursing_init_data.sql 包含19张表的测试数据（3楼层、3房型、18房间、35床位、15设备、10护理项目等） | ✅ 完成 |
 
 **实现方式**:
 - 每个功能完整的Controller + Service + Mapper + Domain四层架构
-- 继承BaseEntity，统一审计字段
+- 继承BaseEntity，统一审计字段（createTime、updateTime等）
 - 使用Lombok @Data简化实体类
 - Mapper XML编写SQL，支持分页查询
+- 所有Controller继承BaseController，统一响应处理
 
 **状态管理**:
 - 床位状态：空闲 → 已入住 / 维修中 / 预订（状态机流转）
 - 设备状态：离线 / 在线 / 故障
 
-**难点**:
-1. 楼层-房间-床位三级层级关系的级联查询与删除校验
-2. 床位状态流转的业务规则约束（如已入住床位不能直接删除）
+**Swagger响应泛型改造说明**:
+
+| 序号 | 改造要点 | 详细说明 | 状态 |
+|------|----------|----------|------|
+| 1 | 问题分析 | Controller返回AjaxResult/TableDataInfo时，Swagger无法推断data字段的具体类型，前端查看接口响应部分为空 | ✅ 已解决 |
+| 2 | 方案设计 | list方法返回`TableDataInfo<T>`，getInfo方法返回`R<T>`，add/edit/remove方法返回`R<Void>` | ✅ 已完成 |
+| 3 | 改造范围 | 仅修改nursing-platform模块下的9个Controller（5个基础设施 + 4个护理服务） | ✅ 已完成 |
+| 4 | 继承调整 | 所有Controller继承框架BaseController，移除NursingBaseController（避免方法签名冲突） | ✅ 已完成 |
+| 5 | 构造方式 | list方法手动构造泛型TableDataInfo（避免父类非泛型版本导致的类型不匹配） | ✅ 已完成 |
+| 6 | 类型匹配 | 修复NursingLevel和NursingProjectPlan的ID参数类型（Integer vs Long） | ✅ 已完成 |
+
+**改造的Controller清单**:
+
+| Controller | 实体类型 | ID类型 | list返回 | getInfo返回 | add/edit/remove返回 |
+|------------|----------|--------|----------|-------------|---------------------|
+| NursingFloorController | NursingFloor | Long | TableDataInfo<NursingFloor> | R<NursingFloor> | R<Void> |
+| NursingRoomTypeController | NursingRoomType | Long | TableDataInfo<NursingRoomType> | R<NursingRoomType> | R<Void> |
+| NursingRoomController | NursingRoom | Long | TableDataInfo<NursingRoom> | R<NursingRoom> | R<Void> |
+| NursingBedController | NursingBed | Long | TableDataInfo<NursingBed> | R<NursingBed> | R<Void> |
+| NursingDeviceController | NursingDevice | Long | TableDataInfo<NursingDevice> | R<NursingDevice> | R<Void> |
+| NursingProjectController | NursingProject | Long | TableDataInfo<NursingProject> | R<NursingProject> | R<Void> |
+| NursingPlanController | NursingPlan | Long | TableDataInfo<NursingPlan> | R<NursingPlan> | R<Void> |
+| NursingLevelController | NursingLevel | Integer | TableDataInfo<NursingLevel> | R<NursingLevel> | R<Void> |
+| NursingProjectPlanController | NursingProjectPlan | Integer | TableDataInfo<NursingProjectPlan> | R<NursingProjectPlan> | R<Void> |
+
+**核心代码示例**:
+
+```java
+// list方法 - 手动构造泛型TableDataInfo
+@GetMapping("/list")
+public TableDataInfo<NursingFloor> list(NursingFloor nursingFloor) {
+    startPage();
+    List<NursingFloor> list = nursingFloorService.selectNursingFloorList(nursingFloor);
+    // 手动构造泛型 TableDataInfo，避免父类非泛型版本导致的类型不匹配
+    TableDataInfo<NursingFloor> rspData = new TableDataInfo<>();
+    rspData.setCode(HttpStatus.SUCCESS);
+    rspData.setMsg("查询成功");
+    rspData.setRows(list);
+    rspData.setTotal(new PageInfo<>(list).getTotal());
+    return rspData;
+}
+
+// getInfo方法 - 使用R.ok()
+@GetMapping(value = "/{id}")
+public R<NursingFloor> getInfo(@PathVariable("id") Long id) {
+    return R.ok(nursingFloorService.selectNursingFloorById(id));
+}
+
+// add方法 - 使用R.ok()/R.fail()
+@PostMapping
+public R<Void> add(@RequestBody NursingFloor nursingFloor) {
+    int rows = nursingFloorService.insertNursingFloor(nursingFloor);
+    return rows > 0 ? R.ok() : R.fail();
+}
+```
+
+**Swagger改造难点与解决方案**:
+1. **方法签名冲突** - 最初尝试创建NursingBaseController继承BaseController并提供泛型方法，但Java不支持仅通过返回类型不同的方法重写，改用直接继承BaseController并手动构造响应对象
+2. **ID类型不一致** - NursingLevel和NursingProjectPlan实体的ID字段为Integer类型，而其他实体为Long类型，需分别处理避免编译错误
+
+**第二阶段难点与解决方案**:
+1. **Swagger响应类型不明确** - 使用泛型R<T>和TableDataInfo<T>替代非泛型版本，使Swagger正确解析响应结构
+2. **楼层-房间-床位三级层级关系** - 通过外键约束和业务逻辑校验确保数据一致性
+3. **床位状态流转规则** - 在Service层实现状态机校验，已入住床位需先退住才能删除
 
 ***
 

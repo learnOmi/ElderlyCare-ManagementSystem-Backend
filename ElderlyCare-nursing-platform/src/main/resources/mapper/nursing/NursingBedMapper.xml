@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tong.nursing.mapper.NursingBedMapper">
+
+    <resultMap type="NursingBed" id="NursingBedResult">
+        <result property="id"    column="id"    />
+        <result property="bedNo"    column="bed_no"    />
+        <result property="roomId"    column="room_id"    />
+        <result property="bedStatus"    column="bed_status"    />
+        <result property="deviceBind"    column="device_bind"    />
+        <result property="deviceNo"    column="device_no"    />
+        <result property="status"    column="status"    />
+        <result property="roomNo"    column="room_no"    />
+        <result property="floorId"    column="floor_id"    />
+        <result property="floorName"    column="floor_name"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectNursingBedVo">
+        select b.id, b.bed_no, b.room_id, b.bed_status, b.device_bind, b.device_no, b.status,
+               b.create_by, b.update_by, b.remark, b.create_time, b.update_time,
+               r.room_no,
+               r.floor_id,
+               f.name as floor_name
+        from nursing_bed b
+        left join nursing_room r on b.room_id = r.id
+        left join nursing_floor f on r.floor_id = f.id
+    </sql>
+
+    <select id="selectNursingBedList" parameterType="NursingBed" resultMap="NursingBedResult">
+        <include refid="selectNursingBedVo"/>
+        <where>
+            <if test="bedNo != null  and bedNo != ''"> and b.bed_no like concat('%', #{bedNo}, '%')</if>
+            <if test="roomId != null "> and b.room_id = #{roomId}</if>
+            <if test="floorId != null "> and r.floor_id = #{floorId}</if>
+            <if test="bedStatus != null "> and b.bed_status = #{bedStatus}</if>
+            <if test="deviceBind != null "> and b.device_bind = #{deviceBind}</if>
+            <if test="status != null "> and b.status = #{status}</if>
+        </where>
+        order by b.bed_no asc
+    </select>
+
+    <select id="selectNursingBedById" parameterType="Long" resultMap="NursingBedResult">
+        <include refid="selectNursingBedVo"/>
+        where b.id = #{id}
+    </select>
+
+    <insert id="insertNursingBed" parameterType="NursingBed" useGeneratedKeys="true" keyProperty="id">
+        insert into nursing_bed
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bedNo != null">bed_no,</if>
+            <if test="roomId != null">room_id,</if>
+            <if test="bedStatus != null">bed_status,</if>
+            <if test="deviceBind != null">device_bind,</if>
+            <if test="deviceNo != null">device_no,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bedNo != null">#{bedNo},</if>
+            <if test="roomId != null">#{roomId},</if>
+            <if test="bedStatus != null">#{bedStatus},</if>
+            <if test="deviceBind != null">#{deviceBind},</if>
+            <if test="deviceNo != null">#{deviceNo},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateNursingBed" parameterType="NursingBed">
+        update nursing_bed
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="bedNo != null">bed_no = #{bedNo},</if>
+            <if test="roomId != null">room_id = #{roomId},</if>
+            <if test="bedStatus != null">bed_status = #{bedStatus},</if>
+            <if test="deviceBind != null">device_bind = #{deviceBind},</if>
+            <if test="deviceNo != null">device_no = #{deviceNo},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteNursingBedById" parameterType="Long">
+        delete from nursing_bed where id = #{id}
+    </delete>
+
+    <delete id="deleteNursingBedByIds" parameterType="String">
+        delete from nursing_bed where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

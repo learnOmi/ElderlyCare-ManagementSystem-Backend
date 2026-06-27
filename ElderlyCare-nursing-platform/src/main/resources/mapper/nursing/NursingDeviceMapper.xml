@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tong.nursing.mapper.NursingDeviceMapper">
+
+    <resultMap type="NursingDevice" id="NursingDeviceResult">
+        <result property="id"    column="id"    />
+        <result property="deviceNo"    column="device_no"    />
+        <result property="deviceName"    column="device_name"    />
+        <result property="deviceType"    column="device_type"    />
+        <result property="bedId"    column="bed_id"    />
+        <result property="status"    column="status"    />
+        <result property="bedNo"    column="bed_no"    />
+        <result property="roomId"    column="room_id"    />
+        <result property="roomNo"    column="room_no"    />
+        <result property="floorId"    column="floor_id"    />
+        <result property="floorName"    column="floor_name"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectNursingDeviceVo">
+        select d.id, d.device_no, d.device_name, d.device_type, d.bed_id, d.status,
+               d.create_by, d.update_by, d.remark, d.create_time, d.update_time,
+               b.bed_no,
+               b.room_id,
+               r.room_no,
+               r.floor_id,
+               f.name as floor_name
+        from nursing_device d
+        left join nursing_bed b on d.bed_id = b.id
+        left join nursing_room r on b.room_id = r.id
+        left join nursing_floor f on r.floor_id = f.id
+    </sql>
+
+    <select id="selectNursingDeviceList" parameterType="NursingDevice" resultMap="NursingDeviceResult">
+        <include refid="selectNursingDeviceVo"/>
+        <where>
+            <if test="deviceNo != null  and deviceNo != ''"> and d.device_no like concat('%', #{deviceNo}, '%')</if>
+            <if test="deviceName != null  and deviceName != ''"> and d.device_name like concat('%', #{deviceName}, '%')</if>
+            <if test="deviceType != null "> and d.device_type = #{deviceType}</if>
+            <if test="bedId != null "> and d.bed_id = #{bedId}</if>
+            <if test="floorId != null "> and r.floor_id = #{floorId}</if>
+            <if test="status != null "> and d.status = #{status}</if>
+        </where>
+        order by d.id desc
+    </select>
+
+    <select id="selectNursingDeviceById" parameterType="Long" resultMap="NursingDeviceResult">
+        <include refid="selectNursingDeviceVo"/>
+        where d.id = #{id}
+    </select>
+
+    <insert id="insertNursingDevice" parameterType="NursingDevice" useGeneratedKeys="true" keyProperty="id">
+        insert into nursing_device
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deviceNo != null">device_no,</if>
+            <if test="deviceName != null">device_name,</if>
+            <if test="deviceType != null">device_type,</if>
+            <if test="bedId != null">bed_id,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deviceNo != null">#{deviceNo},</if>
+            <if test="deviceName != null">#{deviceName},</if>
+            <if test="deviceType != null">#{deviceType},</if>
+            <if test="bedId != null">#{bedId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateNursingDevice" parameterType="NursingDevice">
+        update nursing_device
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deviceNo != null">device_no = #{deviceNo},</if>
+            <if test="deviceName != null">device_name = #{deviceName},</if>
+            <if test="deviceType != null">device_type = #{deviceType},</if>
+            <if test="bedId != null">bed_id = #{bedId},</if>
+            <if test="bedId == null">bed_id = null,</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteNursingDeviceById" parameterType="Long">
+        delete from nursing_device where id = #{id}
+    </delete>
+
+    <delete id="deleteNursingDeviceByIds" parameterType="String">
+        delete from nursing_device where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -12,23 +12,29 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.github.pagehelper.PageInfo;
 import com.tong.common.annotation.Log;
+import com.tong.common.constant.HttpStatus;
 import com.tong.common.core.controller.BaseController;
-import com.tong.common.core.domain.AjaxResult;
 import com.tong.common.enums.BusinessType;
 import com.tong.nursing.domain.NursingPlan;
 import com.tong.nursing.service.INursingPlanService;
 import com.tong.common.utils.poi.ExcelUtil;
+import com.tong.common.core.domain.R;
 import com.tong.common.core.page.TableDataInfo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 护理计划Controller
- * 
+ *
  * @author Tong
  * @date 2026-06-25
  */
+@Api(tags = "护理计划管理")
 @RestController
-@RequestMapping("/nursing/nursingplan")
+@RequestMapping("/nursing/plan")
 public class NursingPlanController extends BaseController
 {
     @Autowired
@@ -37,20 +43,28 @@ public class NursingPlanController extends BaseController
     /**
      * 查询护理计划列表
      */
-    @PreAuthorize("@ss.hasPermi('nursing:nursingplan:list')")
+    @PreAuthorize("@ss.hasPermi('nursing:plan:list')")
+    @ApiOperation(value = "查询护理计划列表", notes = "分页返回护理计划列表")
     @GetMapping("/list")
-    public TableDataInfo list(NursingPlan nursingPlan)
+    public TableDataInfo<NursingPlan> list(NursingPlan nursingPlan)
     {
         startPage();
         List<NursingPlan> list = nursingPlanService.selectNursingPlanList(nursingPlan);
-        return getDataTable(list);
+        // 手动构造泛型 TableDataInfo，避免父类非泛型版本导致的类型不匹配
+        TableDataInfo<NursingPlan> rspData = new TableDataInfo<>();
+        rspData.setCode(HttpStatus.SUCCESS);
+        rspData.setMsg("查询成功");
+        rspData.setRows(list);
+        rspData.setTotal(new PageInfo<>(list).getTotal());
+        return rspData;
     }
 
     /**
      * 导出护理计划列表
      */
-    @PreAuthorize("@ss.hasPermi('nursing:nursingplan:export')")
+    @PreAuthorize("@ss.hasPermi('nursing:plan:export')")
     @Log(title = "护理计划", businessType = BusinessType.EXPORT)
+    @ApiOperation("导出护理计划列表")
     @PostMapping("/export")
     public void export(HttpServletResponse response, NursingPlan nursingPlan)
     {
@@ -62,43 +76,52 @@ public class NursingPlanController extends BaseController
     /**
      * 获取护理计划详细信息
      */
-    @PreAuthorize("@ss.hasPermi('nursing:nursingplan:query')")
+    @PreAuthorize("@ss.hasPermi('nursing:plan:query')")
+    @ApiOperation(value = "获取护理计划详细信息", notes = "返回单个护理计划对象详情")
+    @ApiImplicitParam(name = "id", value = "护理计划ID", required = true, dataType = "Long", paramType = "path")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
+    public R<NursingPlan> getInfo(@PathVariable("id") Long id)
     {
-        return success(nursingPlanService.selectNursingPlanById(id));
+        return R.ok(nursingPlanService.selectNursingPlanById(id));
     }
 
     /**
      * 新增护理计划
      */
-    @PreAuthorize("@ss.hasPermi('nursing:nursingplan:add')")
+    @PreAuthorize("@ss.hasPermi('nursing:plan:add')")
     @Log(title = "护理计划", businessType = BusinessType.INSERT)
+    @ApiOperation(value = "新增护理计划", notes = "返回操作结果状态")
     @PostMapping
-    public AjaxResult add(@RequestBody NursingPlan nursingPlan)
+    public R<Void> add(@RequestBody NursingPlan nursingPlan)
     {
-        return toAjax(nursingPlanService.insertNursingPlan(nursingPlan));
+        int rows = nursingPlanService.insertNursingPlan(nursingPlan);
+        return rows > 0 ? R.ok() : R.fail();
     }
 
     /**
      * 修改护理计划
      */
-    @PreAuthorize("@ss.hasPermi('nursing:nursingplan:edit')")
+    @PreAuthorize("@ss.hasPermi('nursing:plan:edit')")
     @Log(title = "护理计划", businessType = BusinessType.UPDATE)
+    @ApiOperation(value = "修改护理计划", notes = "返回操作结果状态")
     @PutMapping
-    public AjaxResult edit(@RequestBody NursingPlan nursingPlan)
+    public R<Void> edit(@RequestBody NursingPlan nursingPlan)
     {
-        return toAjax(nursingPlanService.updateNursingPlan(nursingPlan));
+        int rows = nursingPlanService.updateNursingPlan(nursingPlan);
+        return rows > 0 ? R.ok() : R.fail();
     }
 
     /**
      * 删除护理计划
      */
-    @PreAuthorize("@ss.hasPermi('nursing:nursingplan:remove')")
+    @PreAuthorize("@ss.hasPermi('nursing:plan:remove')")
     @Log(title = "护理计划", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
+    @ApiOperation(value = "删除护理计划", notes = "返回操作结果状态")
+    @ApiImplicitParam(name = "ids", value = "护理计划ID数组", required = true, dataType = "Long[]", paramType = "path")
+    @DeleteMapping("/{ids}")
+    public R<Void> remove(@PathVariable Long[] ids)
     {
-        return toAjax(nursingPlanService.deleteNursingPlanByIds(ids));
+        int rows = nursingPlanService.deleteNursingPlanByIds(ids);
+        return rows > 0 ? R.ok() : R.fail();
     }
 }
