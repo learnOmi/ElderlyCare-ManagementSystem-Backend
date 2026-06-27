@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tong.nursing.mapper.NursingElderFamilyMapper">
+
+    <resultMap type="NursingElderFamily" id="NursingElderFamilyResult">
+        <result property="id"    column="id"    />
+        <result property="elderId"    column="elder_id"    />
+        <result property="familyId"    column="family_id"    />
+        <result property="relation"    column="relation"    />
+        <result property="isEmergency"    column="is_emergency"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="elderName"    column="elder_name"    />
+        <result property="familyName"    column="family_name"    />
+    </resultMap>
+
+    <sql id="selectNursingElderFamilyVo">
+        select ef.id, ef.elder_id, ef.family_id, ef.relation, ef.is_emergency,
+               ef.create_by, ef.create_time, ef.update_by, ef.update_time, ef.remark,
+               e.name as elder_name, f.name as family_name
+        from nursing_elder_family ef
+        left join nursing_elder e on ef.elder_id = e.id
+        left join nursing_family f on ef.family_id = f.id
+    </sql>
+
+    <select id="selectNursingElderFamilyList" parameterType="NursingElderFamily" resultMap="NursingElderFamilyResult">
+        <include refid="selectNursingElderFamilyVo"/>
+        <where>
+            <if test="elderId != null"> and ef.elder_id = #{elderId}</if>
+            <if test="familyId != null"> and ef.family_id = #{familyId}</if>
+            <if test="relation != null and relation != ''"> and ef.relation = #{relation}</if>
+            <if test="isEmergency != null"> and ef.is_emergency = #{isEmergency}</if>
+        </where>
+        order by ef.id desc
+    </select>
+
+    <select id="selectNursingElderFamilyById" parameterType="Long" resultMap="NursingElderFamilyResult">
+        <include refid="selectNursingElderFamilyVo"/>
+        where ef.id = #{id}
+    </select>
+
+    <insert id="insertNursingElderFamily" parameterType="NursingElderFamily" useGeneratedKeys="true" keyProperty="id">
+        insert into nursing_elder_family
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="elderId != null">elder_id,</if>
+            <if test="familyId != null">family_id,</if>
+            <if test="relation != null">relation,</if>
+            <if test="isEmergency != null">is_emergency,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="elderId != null">#{elderId},</if>
+            <if test="familyId != null">#{familyId},</if>
+            <if test="relation != null">#{relation},</if>
+            <if test="isEmergency != null">#{isEmergency},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateNursingElderFamily" parameterType="NursingElderFamily">
+        update nursing_elder_family
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="elderId != null">elder_id = #{elderId},</if>
+            <if test="familyId != null">family_id = #{familyId},</if>
+            <if test="relation != null">relation = #{relation},</if>
+            <if test="isEmergency != null">is_emergency = #{isEmergency},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteNursingElderFamilyById" parameterType="Long">
+        delete from nursing_elder_family where id = #{id}
+    </delete>
+
+    <delete id="deleteNursingElderFamilyByIds" parameterType="String">
+        delete from nursing_elder_family where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

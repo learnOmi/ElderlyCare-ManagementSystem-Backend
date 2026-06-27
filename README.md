@@ -37,10 +37,10 @@ ElderlyCare (父工程)
 
 | 业务域 | 包含功能 | 表前缀 | 状态 |
 |--------|----------|--------|------|
-| 基础设施 | 楼层、房型、房间、床位、设备 | nursing_ | 设计完成 |
+| 基础设施 | 楼层、房型、房间、床位、设备 | nursing_ | 已实现 |
 | 护理服务 | 护理项目、护理计划、护理等级、项目计划关联 | nursing_ | 已实现 |
-| 老人档案 | 老人信息、家属信息、老人家属关联 | nursing_ | 设计完成 |
-| 入住管理 | 入住申请、入住审核、退住管理 | nursing_ | 设计完成 |
+| 老人档案 | 老人信息、家属信息、老人家属关联 | nursing_ | 已实现 |
+| 入住管理 | 入住申请、入住审核、退住管理 | nursing_ | 已实现 |
 | 健康评估 | 评估记录、评分管理、建议等级 | nursing_ | 设计完成 |
 | 护理排班 | 排班计划、执行记录、状态流转 | nursing_ | 设计完成 |
 | 告警管理 | 告警规则、告警数据、告警处理 | nursing_ | 设计完成 |
@@ -209,16 +209,118 @@ public R<Void> add(@RequestBody NursingFloor nursingFloor) {
 
 ***
 
-### 第三阶段：老人档案与入住管理（规划中）
+### 第三阶段：老人档案与入住管理（已完成 ✅）
 
 **目标**: 建立老人完整档案，实现入住全流程管理
 
-**计划实现**:
-- 老人信息管理（基本信息、护理等级、床位关联）
-- 家属信息管理（多家属、紧急联系人）
-- 老人家属关联管理
-- 入住申请、审核、入住、退住全流程
-- 入住状态流转（待审核 → 已审核 → 已入住 → 已退住）
+**完成内容**:
+
+| 序号 | 功能组件 | 实现方式 | 状态 |
+|------|----------|----------|------|
+| 1 | 老人信息管理 (NursingElder) | Controller + Service + Mapper + Domain 四层架构，支持 CRUD、列表查询、导出、关联护理等级和床位名称 | ✅ 完成 |
+| 2 | 家属信息管理 (NursingFamily) | Controller + Service + Mapper + Domain 四层架构，支持 CRUD、列表查询、导出 | ✅ 完成 |
+| 3 | 老人家属关联管理 (NursingElderFamily) | Controller + Service + Mapper + Domain 四层架构，支持 CRUD、列表查询、关联老人和家属姓名 | ✅ 完成 |
+| 4 | 入住申请管理 (NursingCheckIn) | Controller + Service + Mapper + Domain 四层架构，支持 CRUD、列表查询、导出、状态管理 | ✅ 完成 |
+| 5 | 入住申请详情接口 (DetailVO) | 10表关联查询 + 嵌套结果映射，返回完整关联信息 | ✅ 完成 |
+| 6 | 入住申请列表接口 (ListVO) | 独立VO分层设计，支持老人姓名模糊搜索，返回老人详细信息和护理等级 | ✅ 完成 |
+
+**实现方式**:
+- 每个功能完整的Controller + Service + Mapper + Domain四层架构
+- 继承BaseEntity，统一审计字段（createTime、updateTime等）
+- 使用Lombok @Data简化实体类
+- Mapper XML编写SQL，支持关联查询（left join显示关联名称）
+- 所有Controller继承BaseController，统一响应处理
+- 使用Swagger泛型改造（R<T>和TableDataInfo<T>）
+
+**VO分层设计**:
+
+| VO类 | 用途 | 关联表数 | 说明 |
+|------|------|----------|------|
+| NursingCheckInListVO | 列表接口 | 4表 | 入住申请 + 老人信息 + 床位 + 护理等级 |
+| NursingCheckInDetailVO | 详情接口 | 10表 | 全部关联信息（含房间、楼层、房型、护理计划、家属列表） |
+
+**设计原则**:
+- **Entity（NursingCheckIn）**：仅数据库字段，用于增删改，保持与表结构一致
+- **ListVO**：列表专用，包含必要的展示字段，避免返回冗余数据
+- **DetailVO**：详情专用，返回完整关联信息，支持后续扩展（合同等）
+- **导出接口**：继续使用Entity，保持Excel导出字段稳定
+
+**详情接口10表关联说明**:
+
+```
+nursing_check_in (主表)
+├── nursing_elder (老人信息)
+├── nursing_bed (床位)
+│   └── nursing_room (房间)
+│       ├── nursing_floor (楼层)
+│       └── nursing_room_type (房型)
+├── nursing_level (护理等级)
+├── nursing_plan (护理计划)
+└── nursing_elder_family (老人家属关联)
+    └── nursing_family (家属信息) - 一对多，使用 collection 嵌套映射
+```
+
+**关联查询说明**:
+- NursingElder: 关联查询护理等级名称(level_name)、床位名称(bed_name)
+- NursingElderFamily: 关联查询老人姓名(elder_name)、家属姓名(family_name)
+- NursingCheckIn 列表: 关联查询老人姓名(elder_name)、床位名称(bed_name)、护理等级名称(level_name)、老人详细信息（性别、年龄、电话、身份证、入住状态、健康状态）、护理等级费用/描述
+- NursingCheckIn 详情: 10表全关联，含家属列表（一对多嵌套映射）、房间/楼层/房型/护理计划
+
+**列表查询增强**:
+- 支持按老人姓名模糊搜索（elderName 参数）
+- 返回老人完整基础信息（姓名、性别、年龄、电话、身份证、入住状态、健康状态）
+- 返回护理等级完整信息（名称、费用、描述）
+
+**Swagger响应泛型改造**:
+- 所有Controller返回类型使用R<T>和TableDataInfo<T>
+- 遵循第二阶段Swagger改造规范
+
+| Controller | 实体类型 | list返回 | getInfo返回 | detail返回 | add/edit/remove返回 |
+|------------|----------|----------|-------------|------------|---------------------|
+| NursingElderController | NursingElder | TableDataInfo<NursingElder> | R<NursingElder> | - | R<Void> |
+| NursingFamilyController | NursingFamily | TableDataInfo<NursingFamily> | R<NursingFamily> | - | R<Void> |
+| NursingElderFamilyController | NursingElderFamily | TableDataInfo<NursingElderFamily> | R<NursingElderFamily> | - | R<Void> |
+| NursingCheckInController | NursingCheckIn | TableDataInfo<NursingCheckInListVO> | R<NursingCheckIn> | R<NursingCheckInDetailVO> | R<Void> |
+
+**核心代码示例**:
+
+```java
+// 列表接口 - 使用 NursingCheckInListVO
+@GetMapping("/list")
+public TableDataInfo<NursingCheckInListVO> list(NursingCheckIn nursingCheckIn) {
+    startPage();
+    List<NursingCheckInListVO> list = nursingCheckInService.selectCheckInList(nursingCheckIn);
+    TableDataInfo<NursingCheckInListVO> rspData = new TableDataInfo<>();
+    rspData.setCode(HttpStatus.SUCCESS);
+    rspData.setMsg("查询成功");
+    rspData.setRows(list);
+    rspData.setTotal(new PageInfo<>(list).getTotal());
+    return rspData;
+}
+
+// 详情接口 - 使用 NursingCheckInDetailVO
+@GetMapping(value = "/detail/{id}")
+public R<NursingCheckInDetailVO> getDetail(@PathVariable("id") Long id) {
+    return R.ok(nursingCheckInService.selectCheckInDetailById(id));
+}
+```
+
+```xml
+<!-- MyBatis collection 嵌套映射（一对多家属列表） -->
+<collection property="familyList" ofType="com.tong.nursing.vo.NursingCheckInDetailVO$FamilyInfoVO">
+    <result property="familyId" column="family_id" />
+    <result property="familyName" column="family_name" />
+    <result property="relation" column="relation" />
+    <result property="isEmergency" column="is_emergency" />
+</collection>
+```
+
+**第三阶段难点与解决方案**:
+1. **实体类臃肿问题** - 采用VO分层设计，列表用ListVO、详情用DetailVO，Entity保持纯净
+2. **多表关联查询性能** - 使用LEFT JOIN + 合理索引，避免N+1查询
+3. **一对多关系映射** - 使用MyBatis的collection标签实现嵌套结果映射
+4. **接口扩展性** - 详情接口预留了合同等未来扩展能力，一次SQL查询搞定
+5. **版本兼容** - 保留原有基本信息接口（/{id}），新增详情接口（/detail/{id}），实现平滑过渡
 
 ***
 

@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tong.nursing.mapper.NursingCheckInMapper">
+
+    <resultMap type="NursingCheckIn" id="NursingCheckInResult">
+        <result property="id"    column="id"    />
+        <result property="elderId"    column="elder_id"    />
+        <result property="bedId"    column="bed_id"    />
+        <result property="levelId"    column="level_id"    />
+        <result property="planId"    column="plan_id"    />
+        <result property="applyDate"    column="apply_date"    />
+        <result property="checkInDate"    column="check_in_date"    />
+        <result property="expectedCheckOutDate"    column="expected_check_out_date"    />
+        <result property="checkOutDate"    column="check_out_date"    />
+        <result property="status"    column="status"    />
+        <result property="auditBy"    column="audit_by"    />
+        <result property="auditTime"    column="audit_time"    />
+        <result property="auditRemark"    column="audit_remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="elderName"    column="elder_name"    />
+        <result property="bedName"    column="bed_name"    />
+        <result property="levelName"    column="level_name"    />
+    </resultMap>
+
+    <!-- 基础查询SQL片段（仅含3个联动字段） -->
+    <sql id="selectNursingCheckInVo">
+        select c.id, c.elder_id, c.bed_id, c.level_id, c.plan_id, c.apply_date,
+               c.check_in_date, c.expected_check_out_date, c.check_out_date,
+               c.status, c.audit_by, c.audit_time, c.audit_remark,
+               c.create_by, c.create_time, c.update_by, c.update_time, c.remark,
+               e.name as elder_name, b.bed_no as bed_name, l.name as level_name
+        from nursing_check_in c
+        left join nursing_elder e on c.elder_id = e.id
+        left join nursing_bed b on c.bed_id = b.id
+        left join nursing_level l on c.level_id = l.id
+    </sql>
+
+    <!-- 列表查询SQL片段（包含老人详细信息和护理等级信息） -->
+    <sql id="selectNursingCheckInListVo">
+        select c.id, c.elder_id, c.bed_id, c.level_id, c.plan_id, c.apply_date,
+               c.check_in_date, c.expected_check_out_date, c.check_out_date,
+               c.status, c.audit_by, c.audit_time, c.audit_remark,
+               c.remark, c.create_time,
+               <!-- 老人信息 -->
+               e.name as elder_name, e.gender as elder_gender, e.age as elder_age,
+               e.phone as elder_phone, e.id_card as elder_id_card,
+               e.check_in_status as elder_check_in_status, e.health_status as elder_health_status,
+               <!-- 床位信息 -->
+               b.bed_no as bed_name,
+               <!-- 护理等级信息 -->
+               l.name as level_name, l.fee as level_fee, l.description as level_description
+        from nursing_check_in c
+        left join nursing_elder e on c.elder_id = e.id
+        left join nursing_bed b on c.bed_id = b.id
+        left join nursing_level l on c.level_id = l.id
+    </sql>
+
+    <!-- 列表查询结果映射 -->
+    <resultMap type="com.tong.nursing.vo.NursingCheckInListVO" id="NursingCheckInListResult">
+        <!-- 入住申请基础字段 -->
+        <result property="id"    column="id"    />
+        <result property="elderId"    column="elder_id"    />
+        <result property="bedId"    column="bed_id"    />
+        <result property="levelId"    column="level_id"    />
+        <result property="planId"    column="plan_id"    />
+        <result property="applyDate"    column="apply_date"    />
+        <result property="checkInDate"    column="check_in_date"    />
+        <result property="expectedCheckOutDate"    column="expected_check_out_date"    />
+        <result property="checkOutDate"    column="check_out_date"    />
+        <result property="status"    column="status"    />
+        <result property="auditBy"    column="audit_by"    />
+        <result property="auditTime"    column="audit_time"    />
+        <result property="auditRemark"    column="audit_remark"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <!-- 老人信息 -->
+        <result property="elderName"    column="elder_name"    />
+        <result property="elderGender"    column="elder_gender"    />
+        <result property="elderAge"    column="elder_age"    />
+        <result property="elderPhone"    column="elder_phone"    />
+        <result property="elderIdCard"    column="elder_id_card"    />
+        <result property="elderCheckInStatus"    column="elder_check_in_status"    />
+        <result property="elderHealthStatus"    column="elder_health_status"    />
+        <!-- 床位信息 -->
+        <result property="bedName"    column="bed_name"    />
+        <!-- 护理等级信息 -->
+        <result property="levelName"    column="level_name"    />
+        <result property="levelFee"    column="level_fee"    />
+        <result property="levelDescription"    column="level_description"    />
+    </resultMap>
+
+    <!-- 列表查询：返回 ListVO（包含老人详细信息和护理等级） -->
+    <select id="selectCheckInList" parameterType="NursingCheckIn" resultMap="NursingCheckInListResult">
+        <include refid="selectNursingCheckInListVo"/>
+        <where>
+            <if test="elderId != null"> and c.elder_id = #{elderId}</if>
+            <if test="elderName != null and elderName != ''"> and e.name like concat('%', #{elderName}, '%')</if>
+            <if test="bedId != null"> and c.bed_id = #{bedId}</if>
+            <if test="levelId != null"> and c.level_id = #{levelId}</if>
+            <if test="planId != null"> and c.plan_id = #{planId}</if>
+            <if test="applyDate != null"> and c.apply_date = #{applyDate}</if>
+            <if test="checkInDate != null"> and c.check_in_date = #{checkInDate}</if>
+            <if test="status != null"> and c.status = #{status}</if>
+        </where>
+        order by c.id desc
+    </select>
+
+    <!-- 原有的列表查询：返回 Entity（用于导出等功能） -->
+    <select id="selectNursingCheckInList" parameterType="NursingCheckIn" resultMap="NursingCheckInResult">
+        <include refid="selectNursingCheckInVo"/>
+        <where>
+            <if test="elderId != null"> and c.elder_id = #{elderId}</if>
+            <if test="bedId != null"> and c.bed_id = #{bedId}</if>
+            <if test="levelId != null"> and c.level_id = #{levelId}</if>
+            <if test="planId != null"> and c.plan_id = #{planId}</if>
+            <if test="applyDate != null"> and c.apply_date = #{applyDate}</if>
+            <if test="checkInDate != null"> and c.check_in_date = #{checkInDate}</if>
+            <if test="status != null"> and c.status = #{status}</if>
+        </where>
+        order by c.id desc
+    </select>
+
+    <select id="selectNursingCheckInById" parameterType="Long" resultMap="NursingCheckInResult">
+        <include refid="selectNursingCheckInVo"/>
+        where c.id = #{id}
+    </select>
+
+    <insert id="insertNursingCheckIn" parameterType="NursingCheckIn" useGeneratedKeys="true" keyProperty="id">
+        insert into nursing_check_in
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="elderId != null">elder_id,</if>
+            <if test="bedId != null">bed_id,</if>
+            <if test="levelId != null">level_id,</if>
+            <if test="planId != null">plan_id,</if>
+            <if test="applyDate != null">apply_date,</if>
+            <if test="checkInDate != null">check_in_date,</if>
+            <if test="expectedCheckOutDate != null">expected_check_out_date,</if>
+            <if test="checkOutDate != null">check_out_date,</if>
+            <if test="status != null">status,</if>
+            <if test="auditBy != null">audit_by,</if>
+            <if test="auditTime != null">audit_time,</if>
+            <if test="auditRemark != null">audit_remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="elderId != null">#{elderId},</if>
+            <if test="bedId != null">#{bedId},</if>
+            <if test="levelId != null">#{levelId},</if>
+            <if test="planId != null">#{planId},</if>
+            <if test="applyDate != null">#{applyDate},</if>
+            <if test="checkInDate != null">#{checkInDate},</if>
+            <if test="expectedCheckOutDate != null">#{expectedCheckOutDate},</if>
+            <if test="checkOutDate != null">#{checkOutDate},</if>
+            <if test="status != null">#{status},</if>
+            <if test="auditBy != null">#{auditBy},</if>
+            <if test="auditTime != null">#{auditTime},</if>
+            <if test="auditRemark != null">#{auditRemark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateNursingCheckIn" parameterType="NursingCheckIn">
+        update nursing_check_in
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="elderId != null">elder_id = #{elderId},</if>
+            <if test="bedId != null">bed_id = #{bedId},</if>
+            <if test="levelId != null">level_id = #{levelId},</if>
+            <if test="planId != null">plan_id = #{planId},</if>
+            <if test="applyDate != null">apply_date = #{applyDate},</if>
+            <if test="checkInDate != null">check_in_date = #{checkInDate},</if>
+            <if test="expectedCheckOutDate != null">expected_check_out_date = #{expectedCheckOutDate},</if>
+            <if test="checkOutDate != null">check_out_date = #{checkOutDate},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="auditBy != null">audit_by = #{auditBy},</if>
+            <if test="auditTime != null">audit_time = #{auditTime},</if>
+            <if test="auditRemark != null">audit_remark = #{auditRemark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteNursingCheckInById" parameterType="Long">
+        delete from nursing_check_in where id = #{id}
+    </delete>
+
+    <delete id="deleteNursingCheckInByIds" parameterType="String">
+        delete from nursing_check_in where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 入住申请详情结果映射 -->
+    <resultMap id="NursingCheckInDetailResult" type="com.tong.nursing.vo.NursingCheckInDetailVO">
+        <!-- 入住申请基本信息 -->
+        <result property="id"    column="id"    />
+        <result property="elderId"    column="elder_id"    />
+        <result property="bedId"    column="bed_id"    />
+        <result property="levelId"    column="level_id"    />
+        <result property="planId"    column="plan_id"    />
+        <result property="applyDate"    column="apply_date"    />
+        <result property="checkInDate"    column="check_in_date"    />
+        <result property="expectedCheckOutDate"    column="expected_check_out_date"    />
+        <result property="checkOutDate"    column="check_out_date"    />
+        <result property="status"    column="status"    />
+        <result property="auditBy"    column="audit_by"    />
+        <result property="auditTime"    column="audit_time"    />
+        <result property="auditRemark"    column="audit_remark"    />
+        <result property="remark"    column="remark"    />
+
+        <!-- 老人信息 -->
+        <result property="elderName"    column="elder_name"    />
+        <result property="elderGender"    column="elder_gender"    />
+        <result property="elderBirthday"    column="elder_birthday"    />
+        <result property="elderAge"    column="elder_age"    />
+        <result property="elderIdCard"    column="elder_id_card"    />
+        <result property="elderPhone"    column="elder_phone"    />
+        <result property="elderAddress"    column="elder_address"    />
+        <result property="elderAvatar"    column="elder_avatar"    />
+        <result property="elderCheckInStatus"    column="elder_check_in_status"    />
+        <result property="elderHealthStatus"    column="elder_health_status"    />
+
+        <!-- 床位信息 -->
+        <result property="bedNo"    column="bed_no"    />
+        <result property="bedStatus"    column="bed_status"    />
+        <result property="bedDeviceBind"    column="bed_device_bind"    />
+        <result property="bedDeviceNo"    column="bed_device_no"    />
+
+        <!-- 房间信息 -->
+        <result property="roomId"    column="room_id"    />
+        <result property="roomNo"    column="room_no"    />
+        <result property="roomStatus"    column="room_status"    />
+
+        <!-- 楼层信息 -->
+        <result property="floorId"    column="floor_id"    />
+        <result property="floorName"    column="floor_name"    />
+        <result property="floorNo"    column="floor_no"    />
+
+        <!-- 房型信息 -->
+        <result property="roomTypeId"    column="room_type_id"    />
+        <result property="roomTypeName"    column="room_type_name"    />
+        <result property="roomTypeBedCount"    column="room_type_bed_count"    />
+        <result property="roomTypePrice"    column="room_type_price"    />
+        <result property="roomTypeDescription"    column="room_type_description"    />
+
+        <!-- 护理等级信息 -->
+        <result property="levelName"    column="level_name"    />
+        <result property="levelFee"    column="level_fee"    />
+        <result property="levelDescription"    column="level_description"    />
+
+        <!-- 护理计划信息 -->
+        <result property="planName"    column="plan_name"    />
+        <result property="planStatus"    column="plan_status"    />
+        <result property="planDescription"    column="plan_description"    />
+
+        <!-- 家属列表（一对多） -->
+        <collection property="familyList" ofType="com.tong.nursing.vo.NursingCheckInDetailVO$FamilyInfoVO">
+            <result property="familyId"    column="family_id"    />
+            <result property="familyName"    column="family_name"    />
+            <result property="familyGender"    column="family_gender"    />
+            <result property="familyPhone"    column="family_phone"    />
+            <result property="familyIdCard"    column="family_id_card"    />
+            <result property="familyAddress"    column="family_address"    />
+            <result property="relation"    column="relation"    />
+            <result property="isEmergency"    column="is_emergency"    />
+        </collection>
+    </resultMap>
+
+    <!-- 查询入住申请详情 -->
+    <select id="selectCheckInDetailById" parameterType="Long" resultMap="NursingCheckInDetailResult">
+        select
+            c.id, c.elder_id, c.bed_id, c.level_id, c.plan_id, c.apply_date,
+            c.check_in_date, c.expected_check_out_date, c.check_out_date,
+            c.status, c.audit_by, c.audit_time, c.audit_remark, c.remark,
+            <!-- 老人信息 -->
+            e.name as elder_name, e.gender as elder_gender, e.birthday as elder_birthday,
+            e.age as elder_age, e.id_card as elder_id_card, e.phone as elder_phone,
+            e.address as elder_address, e.avatar as elder_avatar,
+            e.check_in_status as elder_check_in_status, e.health_status as elder_health_status,
+            <!-- 床位信息 -->
+            b.bed_no, b.bed_status, b.device_bind as bed_device_bind, b.device_no as bed_device_no,
+            <!-- 房间信息 -->
+            r.id as room_id, r.room_no, r.status as room_status,
+            <!-- 楼层信息 -->
+            f.id as floor_id, f.name as floor_name, f.floor_no,
+            <!-- 房型信息 -->
+            rt.id as room_type_id, rt.name as room_type_name,
+            rt.bed_count as room_type_bed_count, rt.price as room_type_price,
+            rt.description as room_type_description,
+            <!-- 护理等级信息 -->
+            l.name as level_name, l.fee as level_fee, l.description as level_description,
+            <!-- 护理计划信息 -->
+            p.plan_name as plan_name, p.status as plan_status, p.remark as plan_description,
+            <!-- 家属信息 -->
+            fm.id as family_id, fm.name as family_name, fm.gender as family_gender,
+            fm.phone as family_phone, fm.id_card as family_id_card, fm.address as family_address,
+            ef.relation, ef.is_emergency
+        from nursing_check_in c
+        left join nursing_elder e on c.elder_id = e.id
+        left join nursing_bed b on c.bed_id = b.id
+        left join nursing_room r on b.room_id = r.id
+        left join nursing_floor f on r.floor_id = f.id
+        left join nursing_room_type rt on r.room_type_id = rt.id
+        left join nursing_level l on c.level_id = l.id
+        left join nursing_plan p on c.plan_id = p.id
+        left join nursing_elder_family ef on e.id = ef.elder_id
+        left join nursing_family fm on ef.family_id = fm.id
+        where c.id = #{id}
+        order by ef.is_emergency desc, ef.id asc
+    </select>
+</mapper>
