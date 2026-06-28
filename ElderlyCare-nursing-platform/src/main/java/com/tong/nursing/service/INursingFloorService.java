@@ -2,6 +2,7 @@ package com.tong.nursing.service;
 
 import java.util.List;
 import com.tong.nursing.domain.NursingFloor;
+import com.tong.nursing.vo.FloorTreeVO;
 
 /**
  * 楼层Service接口
@@ -26,6 +27,14 @@ public interface INursingFloorService
      * @return 楼层集合
      */
     public List<NursingFloor> selectNursingFloorList(NursingFloor nursingFloor);
+
+    /**
+     * 查询楼层树形结构（含房间和床位）
+     *
+     * @param id 楼层主键
+     * @return 楼层树形结构
+     */
+    public FloorTreeVO selectFloorTreeById(Long id);
 
     /**
      * 新增楼层

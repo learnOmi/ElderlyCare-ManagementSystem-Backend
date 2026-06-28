@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.tong.nursing.mapper.NursingFloorMapper;
 import com.tong.nursing.domain.NursingFloor;
 import com.tong.nursing.service.INursingFloorService;
+import com.tong.nursing.vo.FloorTreeVO;
 
 /**
  * 楼层Service业务层处理
@@ -42,6 +43,18 @@ public class NursingFloorServiceImpl implements INursingFloorService
     public List<NursingFloor> selectNursingFloorList(NursingFloor nursingFloor)
     {
         return nursingFloorMapper.selectNursingFloorList(nursingFloor);
+    }
+
+    /**
+     * 查询楼层树形结构（含房间和床位）
+     *
+     * @param id 楼层主键
+     * @return 楼层树形结构
+     */
+    @Override
+    public FloorTreeVO selectFloorTreeById(Long id)
+    {
+        return nursingFloorMapper.selectFloorTreeById(id);
     }
 
     /**

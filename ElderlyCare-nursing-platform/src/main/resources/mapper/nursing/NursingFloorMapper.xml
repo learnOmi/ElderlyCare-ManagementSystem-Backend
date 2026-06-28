@@ -34,6 +34,54 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
 
+    <!-- 查询单个楼层的树形结构（含房间和床位） -->
+    <resultMap type="com.tong.nursing.vo.FloorTreeVO" id="FloorTreeResult">
+        <id property="id" column="floor_id"/>
+        <result property="name" column="floor_name"/>
+        <result property="floorNo" column="floor_no"/>
+        <result property="status" column="floor_status"/>
+        <collection property="roomList" ofType="com.tong.nursing.vo.FloorTreeVO$RoomVO">
+            <id property="id" column="room_id"/>
+            <result property="roomNo" column="room_no"/>
+            <result property="roomTypeId" column="room_type_id"/>
+            <result property="roomTypeName" column="room_type_name"/>
+            <result property="status" column="room_status"/>
+            <collection property="bedList" ofType="com.tong.nursing.vo.FloorTreeVO$BedVO">
+                <id property="id" column="bed_id"/>
+                <result property="bedNo" column="bed_no"/>
+                <result property="bedStatus" column="bed_status"/>
+                <result property="deviceBind" column="device_bind"/>
+                <result property="deviceNo" column="device_no"/>
+                <result property="status" column="bed_status_flag"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="selectFloorTreeById" parameterType="Long" resultMap="FloorTreeResult">
+        select
+            f.id as floor_id,
+            f.name as floor_name,
+            f.floor_no,
+            f.status as floor_status,
+            r.id as room_id,
+            r.room_no,
+            r.room_type_id,
+            rt.name as room_type_name,
+            r.status as room_status,
+            b.id as bed_id,
+            b.bed_no,
+            b.bed_status,
+            b.device_bind,
+            b.device_no,
+            b.status as bed_status_flag
+        from nursing_floor f
+        left join nursing_room r on f.id = r.floor_id
+        left join nursing_room_type rt on r.room_type_id = rt.id
+        left join nursing_bed b on r.id = b.room_id
+        where f.id = #{id}
+        order by f.floor_no asc, r.room_no asc, b.bed_no asc
+    </select>
+
     <insert id="insertNursingFloor" parameterType="NursingFloor" useGeneratedKeys="true" keyProperty="id">
         insert into nursing_floor
         <trim prefix="(" suffix=")" suffixOverrides=",">

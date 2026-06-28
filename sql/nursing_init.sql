@@ -730,5 +730,161 @@ VALUES (1, '天', '0', 'nursing_execute_cycle', '', 'primary', 'Y', '0', 'admin'
 (3, '月', '2', 'nursing_execute_cycle', '', 'warning', 'N', '0', 'admin', NOW(), '');
 
 -- =============================================================
+-- 十二、补充字典数据（健康评估、告警、合同、预约等）
+-- =============================================================
+
+-- 健康评估结果字典
+INSERT INTO `sys_dict_type` (`dict_name`, `dict_type`, `status`, `create_by`, `create_time`, `remark`)
+VALUES ('健康评估结果', 'nursing_assessment_result', '0', 'admin', NOW(), '健康评估结果列表');
+
+SET @dictAssessmentResult = LAST_INSERT_ID();
+
+INSERT INTO `sys_dict_data` (`dict_sort`, `dict_label`, `dict_value`, `dict_type`, `css_class`, `list_class`, `is_default`, `status`, `create_by`, `create_time`, `remark`)
+VALUES (1, '无需调整等级', '0', 'nursing_assessment_result', '', 'primary', 'Y', '0', 'admin', NOW(), ''),
+(2, '建议升级等级', '1', 'nursing_assessment_result', '', 'success', 'N', '0', 'admin', NOW(), ''),
+(3, '建议降级', '2', 'nursing_assessment_result', '', 'warning', 'N', '0', 'admin', NOW(), '');
+
+-- 告警类型字典
+INSERT INTO `sys_dict_type` (`dict_name`, `dict_type`, `status`, `create_by`, `create_time`, `remark`)
+VALUES ('告警类型', 'nursing_alert_type', '0', 'admin', NOW(), '告警类型列表');
+
+SET @dictAlertType = LAST_INSERT_ID();
+
+INSERT INTO `sys_dict_data` (`dict_sort`, `dict_label`, `dict_value`, `dict_type`, `css_class`, `list_class`, `is_default`, `status`, `create_by`, `create_time`, `remark`)
+VALUES (1, '离床', '0', 'nursing_alert_type', '', 'info', 'Y', '0', 'admin', NOW(), ''),
+(2, '坠床', '1', 'nursing_alert_type', '', 'danger', 'N', '0', 'admin', NOW(), ''),
+(3, '心率异常', '2', 'nursing_alert_type', '', 'warning', 'N', '0', 'admin', NOW(), ''),
+(4, '呼吸异常', '3', 'nursing_alert_type', '', 'warning', 'N', '0', 'admin', NOW(), ''),
+(5, '其他', '4', 'nursing_alert_type', '', 'default', 'N', '0', 'admin', NOW(), '');
+
+-- 通知方式字典
+INSERT INTO `sys_dict_type` (`dict_name`, `dict_type`, `status`, `create_by`, `create_time`, `remark`)
+VALUES ('通知方式', 'nursing_notify_type', '0', 'admin', NOW(), '告警通知方式列表');
+
+SET @dictNotifyType = LAST_INSERT_ID();
+
+INSERT INTO `sys_dict_data` (`dict_sort`, `dict_label`, `dict_value`, `dict_type`, `css_class`, `list_class`, `is_default`, `status`, `create_by`, `create_time`, `remark`)
+VALUES (1, '系统通知', '0', 'nursing_notify_type', '', 'primary', 'Y', '0', 'admin', NOW(), ''),
+(2, '短信', '1', 'nursing_notify_type', '', 'success', 'N', '0', 'admin', NOW(), ''),
+(3, '电话', '2', 'nursing_notify_type', '', 'danger', 'N', '0', 'admin', NOW(), '');
+
+-- 合同类型字典
+INSERT INTO `sys_dict_type` (`dict_name`, `dict_type`, `status`, `create_by`, `create_time`, `remark`)
+VALUES ('合同类型', 'nursing_contract_type', '0', 'admin', NOW(), '合同类型列表');
+
+SET @dictContractType = LAST_INSERT_ID();
+
+INSERT INTO `sys_dict_data` (`dict_sort`, `dict_label`, `dict_value`, `dict_type`, `css_class`, `list_class`, `is_default`, `status`, `create_by`, `create_time`, `remark`)
+VALUES (1, '入住合同', '0', 'nursing_contract_type', '', 'primary', 'Y', '0', 'admin', NOW(), ''),
+(2, '服务合同', '1', 'nursing_contract_type', '', 'success', 'N', '0', 'admin', NOW(), ''),
+(3, '其他', '2', 'nursing_contract_type', '', 'default', 'N', '0', 'admin', NOW(), '');
+
+-- 合同状态字典
+INSERT INTO `sys_dict_type` (`dict_name`, `dict_type`, `status`, `create_by`, `create_time`, `remark`)
+VALUES ('合同状态', 'nursing_contract_status', '0', 'admin', NOW(), '合同状态列表');
+
+SET @dictContractStatus = LAST_INSERT_ID();
+
+INSERT INTO `sys_dict_data` (`dict_sort`, `dict_label`, `dict_value`, `dict_type`, `css_class`, `list_class`, `is_default`, `status`, `create_by`, `create_time`, `remark`)
+VALUES (1, '草稿', '0', 'nursing_contract_status', '', 'default', 'Y', '0', 'admin', NOW(), ''),
+(2, '已签订', '1', 'nursing_contract_status', '', 'primary', 'N', '0', 'admin', NOW(), ''),
+(3, '已生效', '2', 'nursing_contract_status', '', 'success', 'N', '0', 'admin', NOW(), ''),
+(4, '已到期', '3', 'nursing_contract_status', '', 'info', 'N', '0', 'admin', NOW(), ''),
+(5, '已终止', '4', 'nursing_contract_status', '', 'danger', 'N', '0', 'admin', NOW(), '');
+
+-- 预约类型字典
+INSERT INTO `sys_dict_type` (`dict_name`, `dict_type`, `status`, `create_by`, `create_time`, `remark`)
+VALUES ('预约类型', 'nursing_reservation_type', '0', 'admin', NOW(), '预约类型列表');
+
+SET @dictReservationType = LAST_INSERT_ID();
+
+INSERT INTO `sys_dict_data` (`dict_sort`, `dict_label`, `dict_value`, `dict_type`, `css_class`, `list_class`, `is_default`, `status`, `create_by`, `create_time`, `remark`)
+VALUES (1, '来访预约', '0', 'nursing_reservation_type', '', 'primary', 'Y', '0', 'admin', NOW(), ''),
+(2, '入住预约', '1', 'nursing_reservation_type', '', 'success', 'N', '0', 'admin', NOW(), ''),
+(3, '参观预约', '2', 'nursing_reservation_type', '', 'info', 'N', '0', 'admin', NOW(), '');
+
+-- 预约状态字典
+INSERT INTO `sys_dict_type` (`dict_name`, `dict_type`, `status`, `create_by`, `create_time`, `remark`)
+VALUES ('预约状态', 'nursing_reservation_status', '0', 'admin', NOW(), '预约状态列表');
+
+SET @dictReservationStatus = LAST_INSERT_ID();
+
+INSERT INTO `sys_dict_data` (`dict_sort`, `dict_label`, `dict_value`, `dict_type`, `css_class`, `list_class`, `is_default`, `status`, `create_by`, `create_time`, `remark`)
+VALUES (1, '待确认', '0', 'nursing_reservation_status', '', 'warning', 'Y', '0', 'admin', NOW(), ''),
+(2, '已确认', '1', 'nursing_reservation_status', '', 'success', 'N', '0', 'admin', NOW(), ''),
+(3, '已完成', '2', 'nursing_reservation_status', '', 'primary', 'N', '0', 'admin', NOW(), ''),
+(4, '已取消', '3', 'nursing_reservation_status', '', 'info', 'N', '0', 'admin', NOW(), '');
+
+-- 排班状态字典
+INSERT INTO `sys_dict_type` (`dict_name`, `dict_type`, `status`, `create_by`, `create_time`, `remark`)
+VALUES ('排班状态', 'nursing_arrange_status', '0', 'admin', NOW(), '护理排班状态列表');
+
+SET @dictArrangeStatus = LAST_INSERT_ID();
+
+INSERT INTO `sys_dict_data` (`dict_sort`, `dict_label`, `dict_value`, `dict_type`, `css_class`, `list_class`, `is_default`, `status`, `create_by`, `create_time`, `remark`)
+VALUES (1, '待执行', '0', 'nursing_arrange_status', '', 'warning', 'Y', '0', 'admin', NOW(), ''),
+(2, '已执行', '1', 'nursing_arrange_status', '', 'success', 'N', '0', 'admin', NOW(), ''),
+(3, '已取消', '2', 'nursing_arrange_status', '', 'info', 'N', '0', 'admin', NOW(), ''),
+(4, '执行中', '3', 'nursing_arrange_status', '', 'primary', 'N', '0', 'admin', NOW(), '');
+
+-- 老人入住状态字典
+INSERT INTO `sys_dict_type` (`dict_name`, `dict_type`, `status`, `create_by`, `create_time`, `remark`)
+VALUES ('老人入住状态', 'nursing_elder_check_in_status', '0', 'admin', NOW(), '老人入住状态列表');
+
+SET @dictElderCheckInStatus = LAST_INSERT_ID();
+
+INSERT INTO `sys_dict_data` (`dict_sort`, `dict_label`, `dict_value`, `dict_type`, `css_class`, `list_class`, `is_default`, `status`, `create_by`, `create_time`, `remark`)
+VALUES (1, '未入住', '0', 'nursing_elder_check_in_status', '', 'info', 'Y', '0', 'admin', NOW(), ''),
+(2, '已入住', '1', 'nursing_elder_check_in_status', '', 'success', 'N', '0', 'admin', NOW(), ''),
+(3, '已退住', '2', 'nursing_elder_check_in_status', '', 'default', 'N', '0', 'admin', NOW(), '');
+
+-- 老人健康状态字典
+INSERT INTO `sys_dict_type` (`dict_name`, `dict_type`, `status`, `create_by`, `create_time`, `remark`)
+VALUES ('老人健康状态', 'nursing_elder_health_status', '0', 'admin', NOW(), '老人健康状态列表');
+
+SET @dictElderHealthStatus = LAST_INSERT_ID();
+
+INSERT INTO `sys_dict_data` (`dict_sort`, `dict_label`, `dict_value`, `dict_type`, `css_class`, `list_class`, `is_default`, `status`, `create_by`, `create_time`, `remark`)
+VALUES (1, '自理', '0', 'nursing_elder_health_status', '', 'success', 'Y', '0', 'admin', NOW(), ''),
+(2, '半自理', '1', 'nursing_elder_health_status', '', 'primary', 'N', '0', 'admin', NOW(), ''),
+(3, '不能自理', '2', 'nursing_elder_health_status', '', 'danger', 'N', '0', 'admin', NOW(), '');
+
+-- 设备类型字典
+INSERT INTO `sys_dict_type` (`dict_name`, `dict_type`, `status`, `create_by`, `create_time`, `remark`)
+VALUES ('设备类型', 'nursing_device_type', '0', 'admin', NOW(), '设备类型列表');
+
+SET @dictDeviceType = LAST_INSERT_ID();
+
+INSERT INTO `sys_dict_data` (`dict_sort`, `dict_label`, `dict_value`, `dict_type`, `css_class`, `list_class`, `is_default`, `status`, `create_by`, `create_time`, `remark`)
+VALUES (1, '智能床', '0', 'nursing_device_type', '', 'primary', 'Y', '0', 'admin', NOW(), ''),
+(2, '呼叫器', '1', 'nursing_device_type', '', 'success', 'N', '0', 'admin', NOW(), ''),
+(3, '监测设备', '2', 'nursing_device_type', '', 'warning', 'N', '0', 'admin', NOW(), ''),
+(4, '其他', '3', 'nursing_device_type', '', 'default', 'N', '0', 'admin', NOW(), '');
+
+-- 设备状态字典
+INSERT INTO `sys_dict_type` (`dict_name`, `dict_type`, `status`, `create_by`, `create_time`, `remark`)
+VALUES ('设备状态', 'nursing_device_status', '0', 'admin', NOW(), '设备状态列表');
+
+SET @dictDeviceStatus = LAST_INSERT_ID();
+
+INSERT INTO `sys_dict_data` (`dict_sort`, `dict_label`, `dict_value`, `dict_type`, `css_class`, `list_class`, `is_default`, `status`, `create_by`, `create_time`, `remark`)
+VALUES (1, '离线', '0', 'nursing_device_status', '', 'danger', 'Y', '0', 'admin', NOW(), ''),
+(2, '在线', '1', 'nursing_device_status', '', 'success', 'N', '0', 'admin', NOW(), ''),
+(3, '故障', '2', 'nursing_device_status', '', 'warning', 'N', '0', 'admin', NOW(), '');
+
+-- 家属关系字典
+INSERT INTO `sys_dict_type` (`dict_name`, `dict_type`, `status`, `create_by`, `create_time`, `remark`)
+VALUES ('家属关系', 'nursing_family_relation', '0', 'admin', NOW(), '老人家属关系列表');
+
+SET @dictFamilyRelation = LAST_INSERT_ID();
+
+INSERT INTO `sys_dict_data` (`dict_sort`, `dict_label`, `dict_value`, `dict_type`, `css_class`, `list_class`, `is_default`, `status`, `create_by`, `create_time`, `remark`)
+VALUES (1, '配偶', '0', 'nursing_family_relation', '', 'primary', 'Y', '0', 'admin', NOW(), ''),
+(2, '子女', '1', 'nursing_family_relation', '', 'success', 'N', '0', 'admin', NOW(), ''),
+(3, '父母', '2', 'nursing_family_relation', '', 'warning', 'N', '0', 'admin', NOW(), ''),
+(4, '兄弟姐妹', '3', 'nursing_family_relation', '', 'info', 'N', '0', 'admin', NOW(), ''),
+(5, '其他', '4', 'nursing_family_relation', '', 'default', 'N', '0', 'admin', NOW(), '');
+
+-- =============================================================
 -- 脚本结束
 -- =============================================================

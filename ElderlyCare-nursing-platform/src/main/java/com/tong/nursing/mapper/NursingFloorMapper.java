@@ -2,6 +2,8 @@ package com.tong.nursing.mapper;
 
 import java.util.List;
 import com.tong.nursing.domain.NursingFloor;
+import com.tong.nursing.vo.FloorTreeVO;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 楼层Mapper接口
@@ -9,6 +11,7 @@ import com.tong.nursing.domain.NursingFloor;
  * @author Tong
  * @date 2026-06-27
  */
+@Mapper
 public interface NursingFloorMapper
 {
     /**
@@ -26,6 +29,14 @@ public interface NursingFloorMapper
      * @return 楼层集合
      */
     public List<NursingFloor> selectNursingFloorList(NursingFloor nursingFloor);
+
+    /**
+     * 查询楼层树形结构（含房间和床位）
+     *
+     * @param id 楼层主键
+     * @return 楼层树形结构
+     */
+    public FloorTreeVO selectFloorTreeById(Long id);
 
     /**
      * 新增楼层

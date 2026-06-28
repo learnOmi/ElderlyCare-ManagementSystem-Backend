@@ -22,6 +22,7 @@ import com.tong.nursing.service.INursingFloorService;
 import com.tong.common.utils.poi.ExcelUtil;
 import com.tong.common.core.domain.R;
 import com.tong.common.core.page.TableDataInfo;
+import com.tong.nursing.vo.FloorTreeVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -57,6 +58,18 @@ public class NursingFloorController extends BaseController
         rspData.setRows(list);
         rspData.setTotal(new PageInfo<>(list).getTotal());
         return rspData;
+    }
+
+    /**
+     * 查询楼层树形结构（含房间和床位）
+     */
+    @PreAuthorize("@ss.hasPermi('nursing:floor:query')")
+    @ApiOperation(value = "查询楼层树形结构", notes = "返回指定楼层→房间→床位三级嵌套结构")
+    @ApiImplicitParam(name = "id", value = "楼层ID", required = true, dataType = "Long", paramType = "path")
+    @GetMapping(value = "/{id}/tree")
+    public R<FloorTreeVO> tree(@PathVariable("id") Long id)
+    {
+        return R.ok(nursingFloorService.selectFloorTreeById(id));
     }
 
     /**
