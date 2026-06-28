@@ -135,6 +135,17 @@ public class NursingConstants
     /** 执行周期-月 */
     public static final Integer EXECUTE_CYCLE_MONTH = 2;
 
+    // ==================== 健康评估结果 ====================
+
+    /** 评估结果-无需调整等级 */
+    public static final Integer ASSESSMENT_RESULT_NORMAL = 0;
+
+    /** 评估结果-建议升级等级 */
+    public static final Integer ASSESSMENT_RESULT_UPGRADE = 1;
+
+    /** 评估结果-建议降级 */
+    public static final Integer ASSESSMENT_RESULT_DOWNGRADE = 2;
+
     // ==================== 合同状态 ====================
 
     /** 合同状态-草稿 */

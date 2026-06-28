@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tong.nursing.mapper.NursingArrangeMapper">
+
+    <resultMap type="NursingArrange" id="NursingArrangeResult">
+        <result property="id"    column="id"    />
+        <result property="arrangeNo"    column="arrange_no"    />
+        <result property="elderId"    column="elder_id"    />
+        <result property="projectId"    column="project_id"    />
+        <result property="nurseId"    column="nurse_id"    />
+        <result property="planDate"    column="plan_date"    />
+        <result property="planTime"    column="plan_time"    />
+        <result property="executeTime"    column="execute_time"    />
+        <result property="executeBy"    column="execute_by"    />
+        <result property="status"    column="status"    />
+        <result property="cancelReason"    column="cancel_reason"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="elderName"    column="elder_name"    />
+        <result property="projectName"    column="project_name"    />
+        <result property="nurseName"    column="nurse_name"    />
+    </resultMap>
+
+    <sql id="selectNursingArrangeVo">
+        select a.id, a.arrange_no, a.elder_id, a.project_id, a.nurse_id,
+               a.plan_date, a.plan_time, a.execute_time, a.execute_by,
+               a.status, a.cancel_reason,
+               a.create_by, a.update_by, a.remark, a.create_time, a.update_time,
+               e.name as elder_name,
+               p.name as project_name
+        from nursing_arrange a
+        left join nursing_elder e on a.elder_id = e.id
+        left join nursing_project p on a.project_id = p.id
+    </sql>
+
+    <select id="selectNursingArrangeList" parameterType="NursingArrange" resultMap="NursingArrangeResult">
+        <include refid="selectNursingArrangeVo"/>
+        <where>
+            <if test="arrangeNo != null  and arrangeNo != ''"> and a.arrange_no like concat('%', #{arrangeNo}, '%')</if>
+            <if test="elderId != null "> and a.elder_id = #{elderId}</if>
+            <if test="elderName != null  and elderName != ''"> and e.name like concat('%', #{elderName}, '%')</if>
+            <if test="projectId != null "> and a.project_id = #{projectId}</if>
+            <if test="projectName != null  and projectName != ''"> and p.name like concat('%', #{projectName}, '%')</if>
+            <if test="nurseId != null "> and a.nurse_id = #{nurseId}</if>
+            <if test="nurseName != null  and nurseName != ''"> and a.nurse_name like concat('%', #{nurseName}, '%')</if>
+            <if test="planDate != null "> and a.plan_date = #{planDate}</if>
+            <if test="status != null "> and a.status = #{status}</if>
+        </where>
+        order by a.plan_date asc, a.plan_time asc
+    </select>
+
+    <select id="selectNursingArrangeById" parameterType="Long" resultMap="NursingArrangeResult">
+        <include refid="selectNursingArrangeVo"/>
+        where a.id = #{id}
+    </select>
+
+    <insert id="insertNursingArrange" parameterType="NursingArrange" useGeneratedKeys="true" keyProperty="id">
+        insert into nursing_arrange
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="arrangeNo != null">arrange_no,</if>
+            <if test="elderId != null">elder_id,</if>
+            <if test="projectId != null">project_id,</if>
+            <if test="nurseId != null">nurse_id,</if>
+            <if test="planDate != null">plan_date,</if>
+            <if test="planTime != null">plan_time,</if>
+            <if test="executeTime != null">execute_time,</if>
+            <if test="executeBy != null">execute_by,</if>
+            <if test="status != null">status,</if>
+            <if test="cancelReason != null">cancel_reason,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="arrangeNo != null">#{arrangeNo},</if>
+            <if test="elderId != null">#{elderId},</if>
+            <if test="projectId != null">#{projectId},</if>
+            <if test="nurseId != null">#{nurseId},</if>
+            <if test="planDate != null">#{planDate},</if>
+            <if test="planTime != null">#{planTime},</if>
+            <if test="executeTime != null">#{executeTime},</if>
+            <if test="executeBy != null">#{executeBy},</if>
+            <if test="status != null">#{status},</if>
+            <if test="cancelReason != null">#{cancelReason},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateNursingArrange" parameterType="NursingArrange">
+        update nursing_arrange
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="arrangeNo != null">arrange_no = #{arrangeNo},</if>
+            <if test="elderId != null">elder_id = #{elderId},</if>
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="nurseId != null">nurse_id = #{nurseId},</if>
+            <if test="planDate != null">plan_date = #{planDate},</if>
+            <if test="planTime != null">plan_time = #{planTime},</if>
+            <if test="executeTime != null">execute_time = #{executeTime},</if>
+            <if test="executeBy != null">execute_by = #{executeBy},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="cancelReason != null">cancel_reason = #{cancelReason},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteNursingArrangeById" parameterType="Long">
+        delete from nursing_arrange where id = #{id}
+    </delete>
+
+    <delete id="deleteNursingArrangeByIds" parameterType="String">
+        delete from nursing_arrange where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

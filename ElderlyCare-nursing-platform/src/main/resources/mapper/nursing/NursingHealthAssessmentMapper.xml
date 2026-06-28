@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tong.nursing.mapper.NursingHealthAssessmentMapper">
+
+    <resultMap type="NursingHealthAssessment" id="NursingHealthAssessmentResult">
+        <result property="id"    column="id"    />
+        <result property="elderId"    column="elder_id"    />
+        <result property="assessmentDate"    column="assessment_date"    />
+        <result property="assessor"    column="assessor"    />
+        <result property="physicalScore"    column="physical_score"    />
+        <result property="mentalScore"    column="mental_score"    />
+        <result property="dailyScore"    column="daily_score"    />
+        <result property="socialScore"    column="social_score"    />
+        <result property="totalScore"    column="total_score"    />
+        <result property="suggestedLevel"    column="suggested_level"    />
+        <result property="assessmentResult"    column="assessment_result"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="elderName"    column="elder_name"    />
+        <result property="levelName"    column="level_name"    />
+    </resultMap>
+
+    <sql id="selectNursingHealthAssessmentVo">
+        select a.id, a.elder_id, a.assessment_date, a.assessor,
+               a.physical_score, a.mental_score, a.daily_score, a.social_score,
+               a.total_score, a.suggested_level, a.assessment_result, a.status,
+               a.create_by, a.update_by, a.remark, a.create_time, a.update_time,
+               e.name as elder_name,
+               l.name as level_name
+        from nursing_health_assessment a
+        left join nursing_elder e on a.elder_id = e.id
+        left join nursing_level l on a.suggested_level = l.id
+    </sql>
+
+    <select id="selectNursingHealthAssessmentList" parameterType="NursingHealthAssessment" resultMap="NursingHealthAssessmentResult">
+        <include refid="selectNursingHealthAssessmentVo"/>
+        <where>
+            <if test="elderId != null "> and a.elder_id = #{elderId}</if>
+            <if test="assessmentDate != null "> and a.assessment_date = #{assessmentDate}</if>
+            <if test="assessor != null  and assessor != ''"> and a.assessor like concat('%', #{assessor}, '%')</if>
+            <if test="totalScore != null "> and a.total_score = #{totalScore}</if>
+            <if test="suggestedLevel != null "> and a.suggested_level = #{suggestedLevel}</if>
+            <if test="elderName != null  and elderName != ''"> and e.name like concat('%', #{elderName}, '%')</if>
+            <if test="status != null "> and a.status = #{status}</if>
+        </where>
+        order by a.assessment_date desc
+    </select>
+
+    <select id="selectNursingHealthAssessmentById" parameterType="Long" resultMap="NursingHealthAssessmentResult">
+        <include refid="selectNursingHealthAssessmentVo"/>
+        where a.id = #{id}
+    </select>
+
+    <insert id="insertNursingHealthAssessment" parameterType="NursingHealthAssessment" useGeneratedKeys="true" keyProperty="id">
+        insert into nursing_health_assessment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="elderId != null">elder_id,</if>
+            <if test="assessmentDate != null">assessment_date,</if>
+            <if test="assessor != null">assessor,</if>
+            <if test="physicalScore != null">physical_score,</if>
+            <if test="mentalScore != null">mental_score,</if>
+            <if test="dailyScore != null">daily_score,</if>
+            <if test="socialScore != null">social_score,</if>
+            <if test="totalScore != null">total_score,</if>
+            <if test="suggestedLevel != null">suggested_level,</if>
+            <if test="assessmentResult != null">assessment_result,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="elderId != null">#{elderId},</if>
+            <if test="assessmentDate != null">#{assessmentDate},</if>
+            <if test="assessor != null">#{assessor},</if>
+            <if test="physicalScore != null">#{physicalScore},</if>
+            <if test="mentalScore != null">#{mentalScore},</if>
+            <if test="dailyScore != null">#{dailyScore},</if>
+            <if test="socialScore != null">#{socialScore},</if>
+            <if test="totalScore != null">#{totalScore},</if>
+            <if test="suggestedLevel != null">#{suggestedLevel},</if>
+            <if test="assessmentResult != null">#{assessmentResult},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateNursingHealthAssessment" parameterType="NursingHealthAssessment">
+        update nursing_health_assessment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="elderId != null">elder_id = #{elderId},</if>
+            <if test="assessmentDate != null">assessment_date = #{assessmentDate},</if>
+            <if test="assessor != null">assessor = #{assessor},</if>
+            <if test="physicalScore != null">physical_score = #{physicalScore},</if>
+            <if test="mentalScore != null">mental_score = #{mentalScore},</if>
+            <if test="dailyScore != null">daily_score = #{dailyScore},</if>
+            <if test="socialScore != null">social_score = #{socialScore},</if>
+            <if test="totalScore != null">total_score = #{totalScore},</if>
+            <if test="suggestedLevel != null">suggested_level = #{suggestedLevel},</if>
+            <if test="assessmentResult != null">assessment_result = #{assessmentResult},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteNursingHealthAssessmentById" parameterType="Long">
+        delete from nursing_health_assessment where id = #{id}
+    </delete>
+
+    <delete id="deleteNursingHealthAssessmentByIds" parameterType="String">
+        delete from nursing_health_assessment where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
