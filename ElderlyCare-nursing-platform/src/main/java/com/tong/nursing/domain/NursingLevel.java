@@ -31,7 +31,7 @@ public class NursingLevel extends BaseEntity
     /** 护理计划ID */
     @Excel(name = "护理计划ID")
     @ApiModelProperty("护理计划ID")
-    private Integer lplanId;
+    private Long planId;
 
     /** 护理费用 */
     @Excel(name = "护理费用")
