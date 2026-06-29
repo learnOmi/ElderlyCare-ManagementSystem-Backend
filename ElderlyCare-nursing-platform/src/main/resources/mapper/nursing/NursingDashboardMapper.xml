@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tong.nursing.mapper.NursingDashboardMapper">
+
+    <!-- 在住老人数 -->
+    <select id="countOnlineElders" resultType="Integer">
+        SELECT COUNT(*) FROM nursing_elder WHERE check_in_status = 1
+    </select>
+
+    <!-- 空闲床位数 -->
+    <select id="countFreeBeds" resultType="Integer">
+        SELECT COUNT(*) FROM nursing_bed WHERE bed_status = 0
+    </select>
+
+    <!-- 待确认预约数 -->
+    <select id="countPendingReservations" resultType="Integer">
+        SELECT COUNT(*) FROM nursing_reservation WHERE status = 0
+    </select>
+
+    <!-- 待处理告警数 -->
+    <select id="countPendingAlerts" resultType="Integer">
+        SELECT COUNT(*) FROM nursing_alert_data WHERE status = 0
+    </select>
+
+    <!-- 最近7天每日预约数量 -->
+    <select id="selectRecent7DayReservationCount" resultType="java.util.HashMap">
+        SELECT
+            DATE(reservation_date) AS stat_date,
+            COUNT(*) AS cnt
+        FROM nursing_reservation
+        WHERE reservation_date BETWEEN DATE_SUB(CURDATE(), INTERVAL 6 DAY) AND CURDATE()
+        GROUP BY DATE(reservation_date)
+        ORDER BY stat_date
+    </select>
+
+    <!-- 最近7天每日入住数量 -->
+    <select id="selectRecent7DayCheckInCount" resultType="java.util.HashMap">
+        SELECT
+            DATE(create_time) AS stat_date,
+            COUNT(*) AS cnt
+        FROM nursing_check_in
+        WHERE create_time BETWEEN DATE_SUB(CURDATE(), INTERVAL 6 DAY) AND CURDATE()
+          AND status = 2
+        GROUP BY DATE(create_time)
+        ORDER BY stat_date
+    </select>
+
+    <!-- 床位状态分布 -->
+    <select id="selectBedStatusDistribution" resultType="com.tong.nursing.vo.DashboardCategoryVO">
+        SELECT
+            CASE bed_status
+                WHEN 0 THEN '空闲'
+                WHEN 1 THEN '已入住'
+                WHEN 2 THEN '维修中'
+                WHEN 3 THEN '预订'
+                ELSE '未知'
+            END AS name,
+            COUNT(*) AS value
+        FROM nursing_bed
+        GROUP BY bed_status
+        ORDER BY bed_status
+    </select>
+
+    <!-- 各楼层入住人数 -->
+    <select id="selectFloorOccupancyCount" resultType="com.tong.nursing.vo.DashboardCategoryVO">
+        SELECT
+            f.name AS name,
+            COUNT(e.id) AS value
+        FROM nursing_floor f
+        LEFT JOIN nursing_room r ON f.id = r.floor_id AND r.status = 1
+        LEFT JOIN nursing_bed b ON r.id = b.room_id AND b.bed_status = 1
+        LEFT JOIN nursing_elder e ON b.id = e.bed_id AND e.check_in_status = 1
+        WHERE f.status = 1
+        GROUP BY f.id, f.name
+        ORDER BY f.floor_no
+    </select>
+
+    <!-- 各护理等级老人数量 -->
+    <select id="selectLevelElderCount" resultType="com.tong.nursing.vo.DashboardCategoryVO">
+        SELECT
+            l.level_name AS name,
+            COUNT(e.id) AS value
+        FROM nursing_elder e
+        LEFT JOIN nursing_level l ON e.level_id = l.id
+        WHERE e.check_in_status = 1
+        GROUP BY l.id, l.level_name
+        ORDER BY l.sort_order
+    </select>
+
+</mapper>
