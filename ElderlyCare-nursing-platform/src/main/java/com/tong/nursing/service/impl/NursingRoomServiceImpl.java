@@ -2,11 +2,14 @@ package com.tong.nursing.service.impl;
 
 import java.util.List;
 import com.tong.common.utils.DateUtils;
+import com.tong.common.exception.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.tong.nursing.mapper.NursingRoomMapper;
 import com.tong.nursing.domain.NursingRoom;
 import com.tong.nursing.service.INursingRoomService;
+import com.tong.nursing.mapper.NursingBedMapper;
+import com.tong.nursing.domain.NursingBed;
 
 /**
  * 房间Service业务层处理
@@ -19,6 +22,9 @@ public class NursingRoomServiceImpl implements INursingRoomService
 {
     @Autowired
     private NursingRoomMapper nursingRoomMapper;
+
+    @Autowired
+    private NursingBedMapper nursingBedMapper;
 
     /**
      * 查询房间
@@ -79,6 +85,19 @@ public class NursingRoomServiceImpl implements INursingRoomService
     @Override
     public int deleteNursingRoomByIds(Long[] ids)
     {
+        // 校验每个房间下是否有关联床位
+        for (Long id : ids)
+        {
+            NursingBed bed = new NursingBed();
+            bed.setRoomId(id);
+            List<NursingBed> bedList = nursingBedMapper.selectNursingBedList(bed);
+            if (bedList != null && !bedList.isEmpty())
+            {
+                NursingRoom room = nursingRoomMapper.selectNursingRoomById(id);
+                String roomNo = room != null ? room.getRoomNo() : "ID:" + id;
+                throw new ServiceException("房间【" + roomNo + "】下存在" + bedList.size() + "个床位，不允许删除");
+            }
+        }
         return nursingRoomMapper.deleteNursingRoomByIds(ids);
     }
 
@@ -91,6 +110,16 @@ public class NursingRoomServiceImpl implements INursingRoomService
     @Override
     public int deleteNursingRoomById(Long id)
     {
+        // 校验房间下是否有关联床位
+        NursingBed bed = new NursingBed();
+        bed.setRoomId(id);
+        List<NursingBed> bedList = nursingBedMapper.selectNursingBedList(bed);
+        if (bedList != null && !bedList.isEmpty())
+        {
+            NursingRoom room = nursingRoomMapper.selectNursingRoomById(id);
+            String roomNo = room != null ? room.getRoomNo() : "ID:" + id;
+            throw new ServiceException("房间【" + roomNo + "】下存在" + bedList.size() + "个床位，不允许删除");
+        }
         return nursingRoomMapper.deleteNursingRoomById(id);
     }
 }

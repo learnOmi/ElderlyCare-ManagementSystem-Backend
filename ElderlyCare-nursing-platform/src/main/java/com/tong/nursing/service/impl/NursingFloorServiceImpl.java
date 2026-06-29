@@ -2,12 +2,15 @@ package com.tong.nursing.service.impl;
 
 import java.util.List;
 import com.tong.common.utils.DateUtils;
+import com.tong.common.exception.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.tong.nursing.mapper.NursingFloorMapper;
 import com.tong.nursing.domain.NursingFloor;
 import com.tong.nursing.service.INursingFloorService;
 import com.tong.nursing.vo.FloorTreeVO;
+import com.tong.nursing.mapper.NursingRoomMapper;
+import com.tong.nursing.domain.NursingRoom;
 
 /**
  * 楼层Service业务层处理
@@ -20,6 +23,9 @@ public class NursingFloorServiceImpl implements INursingFloorService
 {
     @Autowired
     private NursingFloorMapper nursingFloorMapper;
+
+    @Autowired
+    private NursingRoomMapper nursingRoomMapper;
 
     /**
      * 查询楼层
@@ -92,6 +98,19 @@ public class NursingFloorServiceImpl implements INursingFloorService
     @Override
     public int deleteNursingFloorByIds(Long[] ids)
     {
+        // 校验每个楼层下是否有关联房间
+        for (Long id : ids)
+        {
+            NursingRoom room = new NursingRoom();
+            room.setFloorId(id);
+            List<NursingRoom> roomList = nursingRoomMapper.selectNursingRoomList(room);
+            if (roomList != null && !roomList.isEmpty())
+            {
+                NursingFloor floor = nursingFloorMapper.selectNursingFloorById(id);
+                String floorName = floor != null ? floor.getName() : "ID:" + id;
+                throw new ServiceException("楼层【" + floorName + "】下存在" + roomList.size() + "个房间，不允许删除");
+            }
+        }
         return nursingFloorMapper.deleteNursingFloorByIds(ids);
     }
 
@@ -104,6 +123,16 @@ public class NursingFloorServiceImpl implements INursingFloorService
     @Override
     public int deleteNursingFloorById(Long id)
     {
+        // 校验楼层下是否有关联房间
+        NursingRoom room = new NursingRoom();
+        room.setFloorId(id);
+        List<NursingRoom> roomList = nursingRoomMapper.selectNursingRoomList(room);
+        if (roomList != null && !roomList.isEmpty())
+        {
+            NursingFloor floor = nursingFloorMapper.selectNursingFloorById(id);
+            String floorName = floor != null ? floor.getName() : "ID:" + id;
+            throw new ServiceException("楼层【" + floorName + "】下存在" + roomList.size() + "个房间，不允许删除");
+        }
         return nursingFloorMapper.deleteNursingFloorById(id);
     }
 }

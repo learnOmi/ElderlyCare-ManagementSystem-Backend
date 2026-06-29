@@ -58,4 +58,20 @@ public interface NursingProjectPlanMapper
      * @return 结果
      */
     public int deleteNursingProjectPlanByIds(Integer[] ids);
+
+    /**
+     * 根据计划ID删除护理项目计划关联
+     *
+     * @param planId 计划ID
+     * @return 结果
+     */
+    public int deleteNursingProjectPlanByPlanId(Long planId);
+
+    /**
+     * 批量根据计划ID删除护理项目计划关联
+     *
+     * @param planIds 计划ID数组
+     * @return 结果
+     */
+    public int deleteNursingProjectPlanByPlanIds(Long[] planIds);
 }

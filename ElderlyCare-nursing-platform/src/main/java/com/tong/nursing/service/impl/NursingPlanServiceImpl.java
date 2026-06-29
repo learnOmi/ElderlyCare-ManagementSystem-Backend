@@ -4,9 +4,11 @@ import java.util.List;
 import com.tong.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import com.tong.nursing.mapper.NursingPlanMapper;
 import com.tong.nursing.domain.NursingPlan;
 import com.tong.nursing.service.INursingPlanService;
+import com.tong.nursing.mapper.NursingProjectPlanMapper;
 
 /**
  * 护理计划Service业务层处理
@@ -19,6 +21,9 @@ public class NursingPlanServiceImpl implements INursingPlanService
 {
     @Autowired
     private NursingPlanMapper nursingPlanMapper;
+
+    @Autowired
+    private NursingProjectPlanMapper nursingProjectPlanMapper;
 
     /**
      * 查询护理计划
@@ -77,8 +82,11 @@ public class NursingPlanServiceImpl implements INursingPlanService
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int deleteNursingPlanByIds(Long[] ids)
     {
+        // 级联删除关联的项目计划
+        nursingProjectPlanMapper.deleteNursingProjectPlanByPlanIds(ids);
         return nursingPlanMapper.deleteNursingPlanByIds(ids);
     }
 
@@ -89,8 +97,11 @@ public class NursingPlanServiceImpl implements INursingPlanService
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int deleteNursingPlanById(Long id)
     {
+        // 级联删除关联的项目计划
+        nursingProjectPlanMapper.deleteNursingProjectPlanByPlanId(id);
         return nursingPlanMapper.deleteNursingPlanById(id);
     }
 }
