@@ -44,8 +44,8 @@ ElderlyCare (父工程)
 | 健康评估 | 评估记录、评分管理、建议等级 | nursing_ | 已实现 |
 | 护理排班 | 排班计划、执行记录、状态流转 | nursing_ | 已实现 |
 | 告警管理 | 告警规则、告警数据、告警处理 | nursing_ | 已实现 |
-| 合同管理 | 合同签订、合同变更、合同终止 | nursing_ | 设计完成 |
-| 预约管理 | 来访预约、入住预约、参观预约 | nursing_ | 设计完成 |
+| 合同管理 | 合同签订、合同变更、合同终止 | nursing_ | 已实现 |
+| 预约管理 | 来访预约、入住预约、参观预约 | nursing_ | 已实现 |
 
 ## 数据库表清单（nursing_ 前缀，共19张）
 
@@ -68,8 +68,8 @@ ElderlyCare (父工程)
 | 15 | nursing_arrange | 护理排班表 | 护理排班 | ✅ 代码已实现 |
 | 16 | nursing_alert_rule | 告警规则表 | 告警管理 | ✅ 代码已实现 |
 | 17 | nursing_alert_data | 告警数据表 | 告警管理 | ✅ 代码已实现 |
-| 18 | nursing_contract | 合同表 | 合同管理 | ⏳ 待开发 |
-| 19 | nursing_reservation | 预约表 | 预约管理 | ⏳ 待开发 |
+| 19 | nursing_contract | 合同表 | 合同管理 | ✅ 已实现 |
+| 20 | nursing_reservation | 预约表 | 预约管理 | ✅ 已实现 |
 
 ## 开发路线图
 

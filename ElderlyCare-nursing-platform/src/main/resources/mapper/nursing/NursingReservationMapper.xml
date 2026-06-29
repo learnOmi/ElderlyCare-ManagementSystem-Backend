@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tong.nursing.mapper.NursingReservationMapper">
+
+    <resultMap type="NursingReservation" id="NursingReservationResult">
+        <result property="id"    column="id"    />
+        <result property="reservationNo"    column="reservation_no"    />
+        <result property="reservationType"    column="reservation_type"    />
+        <result property="name"    column="name"    />
+        <result property="phone"    column="phone"    />
+        <result property="elderName"    column="elder_name"    />
+        <result property="reservationDate"    column="reservation_date"    />
+        <result property="reservationTime"    column="reservation_time"    />
+        <result property="visitorCount"    column="visitor_count"    />
+        <result property="status"    column="status"    />
+        <result property="cancelReason"    column="cancel_reason"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectNursingReservationVo">
+        select id, reservation_no, reservation_type, name, phone, elder_name,
+               reservation_date, reservation_time, visitor_count, status,
+               cancel_reason, create_by, update_by, remark,
+               create_time, update_time
+        from nursing_reservation
+    </sql>
+
+    <select id="selectNursingReservationList" parameterType="NursingReservation" resultMap="NursingReservationResult">
+        <include refid="selectNursingReservationVo"/>
+        <where>
+            <if test="reservationNo != null  and reservationNo != ''"> and reservation_no like concat('%', #{reservationNo}, '%')</if>
+            <if test="reservationType != null "> and reservation_type = #{reservationType}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="elderName != null  and elderName != ''"> and elder_name like concat('%', #{elderName}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="reservationDate != null "> and reservation_date = #{reservationDate}</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectNursingReservationById" parameterType="Long" resultMap="NursingReservationResult">
+        <include refid="selectNursingReservationVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertNursingReservation" parameterType="NursingReservation" useGeneratedKeys="true" keyProperty="id">
+        insert into nursing_reservation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="reservationNo != null">reservation_no,</if>
+            <if test="reservationType != null">reservation_type,</if>
+            <if test="name != null">name,</if>
+            <if test="phone != null">phone,</if>
+            <if test="elderName != null">elder_name,</if>
+            <if test="reservationDate != null">reservation_date,</if>
+            <if test="reservationTime != null">reservation_time,</if>
+            <if test="visitorCount != null">visitor_count,</if>
+            <if test="status != null">status,</if>
+            <if test="cancelReason != null">cancel_reason,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="reservationNo != null">#{reservationNo},</if>
+            <if test="reservationType != null">#{reservationType},</if>
+            <if test="name != null">#{name},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="elderName != null">#{elderName},</if>
+            <if test="reservationDate != null">#{reservationDate},</if>
+            <if test="reservationTime != null">#{reservationTime},</if>
+            <if test="visitorCount != null">#{visitorCount},</if>
+            <if test="status != null">#{status},</if>
+            <if test="cancelReason != null">#{cancelReason},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateNursingReservation" parameterType="NursingReservation">
+        update nursing_reservation
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="reservationNo != null">reservation_no = #{reservationNo},</if>
+            <if test="reservationType != null">reservation_type = #{reservationType},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="elderName != null">elder_name = #{elderName},</if>
+            <if test="reservationDate != null">reservation_date = #{reservationDate},</if>
+            <if test="reservationTime != null">reservation_time = #{reservationTime},</if>
+            <if test="visitorCount != null">visitor_count = #{visitorCount},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="cancelReason != null">cancel_reason = #{cancelReason},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteNursingReservationById" parameterType="Long">
+        delete from nursing_reservation where id = #{id}
+    </delete>
+
+    <delete id="deleteNursingReservationByIds" parameterType="String">
+        delete from nursing_reservation where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
