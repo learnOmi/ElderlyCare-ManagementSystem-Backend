@@ -110,6 +110,34 @@ public class NursingConstants
     /** 告警状态-已忽略 */
     public static final Integer ALERT_STATUS_IGNORED = 3;
 
+    // ==================== 告警类型 ====================
+
+    /** 告警类型-离床 */
+    public static final Integer ALERT_TYPE_BED_LEAVE = 0;
+
+    /** 告警类型-坠床 */
+    public static final Integer ALERT_TYPE_FALL = 1;
+
+    /** 告警类型-心率异常 */
+    public static final Integer ALERT_TYPE_HEART_RATE = 2;
+
+    /** 告警类型-呼吸异常 */
+    public static final Integer ALERT_TYPE_RESPIRATION = 3;
+
+    /** 告警类型-其他 */
+    public static final Integer ALERT_TYPE_OTHER = 4;
+
+    // ==================== 通知方式 ====================
+
+    /** 通知方式-系统通知 */
+    public static final Integer NOTIFY_TYPE_SYSTEM = 0;
+
+    /** 通知方式-短信 */
+    public static final Integer NOTIFY_TYPE_SMS = 1;
+
+    /** 通知方式-电话 */
+    public static final Integer NOTIFY_TYPE_PHONE = 2;
+
     // ==================== 排班执行状态 ====================
 
     /** 排班状态-待执行 */

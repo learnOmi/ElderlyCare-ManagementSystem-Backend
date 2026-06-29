@@ -11,6 +11,7 @@ import com.tong.nursing.mapper.NursingArrangeMapper;
 import com.tong.nursing.domain.NursingArrange;
 import com.tong.nursing.service.INursingArrangeService;
 import com.tong.nursing.constant.NursingConstants;
+import com.tong.nursing.vo.NursingArrangeVO;
 
 /**
  * 护理排班Service业务层处理
@@ -46,6 +47,30 @@ public class NursingArrangeServiceImpl implements INursingArrangeService
     public List<NursingArrange> selectNursingArrangeList(NursingArrange nursingArrange)
     {
         return nursingArrangeMapper.selectNursingArrangeList(nursingArrange);
+    }
+
+    /**
+     * 查询护理排班视图列表（含老人姓名、项目名称、护理员姓名）
+     *
+     * @param nursingArrange 护理排班
+     * @return 护理排班视图集合
+     */
+    @Override
+    public List<NursingArrangeVO> selectArrangeVOList(NursingArrange nursingArrange)
+    {
+        return nursingArrangeMapper.selectArrangeVOList(nursingArrange);
+    }
+
+    /**
+     * 查询护理排班视图详情
+     *
+     * @param id 护理排班主键
+     * @return 护理排班视图
+     */
+    @Override
+    public NursingArrangeVO selectArrangeVOById(Long id)
+    {
+        return nursingArrangeMapper.selectArrangeVOById(id);
     }
 
     /**

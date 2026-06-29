@@ -2,6 +2,7 @@ package com.tong.nursing.service;
 
 import java.util.List;
 import com.tong.nursing.domain.NursingArrange;
+import com.tong.nursing.vo.NursingArrangeVO;
 
 /**
  * 护理排班Service接口
@@ -26,6 +27,22 @@ public interface INursingArrangeService
      * @return 护理排班集合
      */
     public List<NursingArrange> selectNursingArrangeList(NursingArrange nursingArrange);
+
+    /**
+     * 查询护理排班视图列表（含老人姓名、项目名称、护理员姓名）
+     *
+     * @param nursingArrange 护理排班
+     * @return 护理排班视图集合
+     */
+    public List<NursingArrangeVO> selectArrangeVOList(NursingArrange nursingArrange);
+
+    /**
+     * 查询护理排班视图详情
+     *
+     * @param id 护理排班主键
+     * @return 护理排班视图
+     */
+    public NursingArrangeVO selectArrangeVOById(Long id);
 
     /**
      * 新增护理排班

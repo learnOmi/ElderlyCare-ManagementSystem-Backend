@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tong.nursing.mapper.NursingAlertRuleMapper">
+
+    <resultMap type="NursingAlertRule" id="NursingAlertRuleResult">
+        <result property="id"    column="id"    />
+        <result property="ruleName"    column="rule_name"    />
+        <result property="alertType"    column="alert_type"    />
+        <result property="threshold"    column="threshold"    />
+        <result property="level"    column="level"    />
+        <result property="notifyType"    column="notify_type"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectNursingAlertRuleVo">
+        select id, rule_name, alert_type, threshold, level, notify_type, status,
+               create_by, update_by, remark, create_time, update_time
+        from nursing_alert_rule
+    </sql>
+
+    <select id="selectNursingAlertRuleList" parameterType="NursingAlertRule" resultMap="NursingAlertRuleResult">
+        <include refid="selectNursingAlertRuleVo"/>
+        <where>
+            <if test="ruleName != null  and ruleName != ''"> and rule_name like concat('%', #{ruleName}, '%')</if>
+            <if test="alertType != null "> and alert_type = #{alertType}</if>
+            <if test="level != null "> and level = #{level}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectNursingAlertRuleById" parameterType="Long" resultMap="NursingAlertRuleResult">
+        <include refid="selectNursingAlertRuleVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertNursingAlertRule" parameterType="NursingAlertRule" useGeneratedKeys="true" keyProperty="id">
+        insert into nursing_alert_rule
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ruleName != null">rule_name,</if>
+            <if test="alertType != null">alert_type,</if>
+            <if test="threshold != null">threshold,</if>
+            <if test="level != null">level,</if>
+            <if test="notifyType != null">notify_type,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ruleName != null">#{ruleName},</if>
+            <if test="alertType != null">#{alertType},</if>
+            <if test="threshold != null">#{threshold},</if>
+            <if test="level != null">#{level},</if>
+            <if test="notifyType != null">#{notifyType},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateNursingAlertRule" parameterType="NursingAlertRule">
+        update nursing_alert_rule
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="ruleName != null">rule_name = #{ruleName},</if>
+            <if test="alertType != null">alert_type = #{alertType},</if>
+            <if test="threshold != null">threshold = #{threshold},</if>
+            <if test="level != null">level = #{level},</if>
+            <if test="notifyType != null">notify_type = #{notifyType},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteNursingAlertRuleById" parameterType="Long">
+        delete from nursing_alert_rule where id = #{id}
+    </delete>
+
+    <delete id="deleteNursingAlertRuleByIds" parameterType="String">
+        delete from nursing_alert_rule where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

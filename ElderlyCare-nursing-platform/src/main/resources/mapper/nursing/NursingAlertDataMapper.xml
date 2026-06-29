@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tong.nursing.mapper.NursingAlertDataMapper">
+
+    <resultMap type="NursingAlertData" id="NursingAlertDataResult">
+        <result property="id"    column="id"    />
+        <result property="alertNo"    column="alert_no"    />
+        <result property="elderId"    column="elder_id"    />
+        <result property="bedId"    column="bed_id"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="ruleId"    column="rule_id"    />
+        <result property="alertType"    column="alert_type"    />
+        <result property="level"    column="level"    />
+        <result property="alertValue"    column="alert_value"    />
+        <result property="alertTime"    column="alert_time"    />
+        <result property="handleTime"    column="handle_time"    />
+        <result property="handleBy"    column="handle_by"    />
+        <result property="handleResult"    column="handle_result"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <resultMap type="com.tong.nursing.vo.NursingAlertDataVO" id="NursingAlertDataVOResult">
+        <result property="id"    column="id"    />
+        <result property="alertNo"    column="alert_no"    />
+        <result property="elderId"    column="elder_id"    />
+        <result property="elderName"    column="elder_name"    />
+        <result property="bedId"    column="bed_id"    />
+        <result property="bedName"    column="bed_name"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="deviceName"    column="device_name"    />
+        <result property="ruleId"    column="rule_id"    />
+        <result property="ruleName"    column="rule_name"    />
+        <result property="alertType"    column="alert_type"    />
+        <result property="level"    column="level"    />
+        <result property="alertValue"    column="alert_value"    />
+        <result property="alertTime"    column="alert_time"    />
+        <result property="handleTime"    column="handle_time"    />
+        <result property="handleBy"    column="handle_by"    />
+        <result property="handleResult"    column="handle_result"    />
+        <result property="status"    column="status"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectNursingAlertDataVo">
+        select a.id, a.alert_no, a.elder_id, a.bed_id, a.device_id,
+               a.rule_id, a.alert_type, a.level, a.alert_value,
+               a.alert_time, a.handle_time, a.handle_by, a.handle_result,
+               a.status, a.create_by, a.update_by, a.remark, a.create_time, a.update_time,
+               e.name as elder_name,
+               b.bed_no as bed_name,
+               d.device_name,
+               r.rule_name
+        from nursing_alert_data a
+        left join nursing_elder e on a.elder_id = e.id
+        left join nursing_bed b on a.bed_id = b.id
+        left join nursing_device d on a.device_id = d.id
+        left join nursing_alert_rule r on a.rule_id = r.id
+    </sql>
+
+    <select id="selectAlertDataVOList" parameterType="NursingAlertData" resultMap="NursingAlertDataVOResult">
+        <include refid="selectNursingAlertDataVo"/>
+        <where>
+            <if test="alertNo != null  and alertNo != ''"> and a.alert_no like concat('%', #{alertNo}, '%')</if>
+            <if test="elderId != null "> and a.elder_id = #{elderId}</if>
+            <if test="elderName != null  and elderName != ''"> and e.name like concat('%', #{elderName}, '%')</if>
+            <if test="bedId != null "> and a.bed_id = #{bedId}</if>
+            <if test="deviceId != null "> and a.device_id = #{deviceId}</if>
+            <if test="ruleId != null "> and a.rule_id = #{ruleId}</if>
+            <if test="alertType != null "> and a.alert_type = #{alertType}</if>
+            <if test="level != null "> and a.level = #{level}</if>
+            <if test="status != null "> and a.status = #{status}</if>
+            <if test="alertTime != null "> and a.alert_time = #{alertTime}</if>
+        </where>
+        order by a.alert_time desc, a.level desc
+    </select>
+
+    <select id="selectAlertDataVOById" parameterType="Long" resultMap="NursingAlertDataVOResult">
+        <include refid="selectNursingAlertDataVo"/>
+        where a.id = #{id}
+    </select>
+
+    <select id="selectNursingAlertDataList" parameterType="NursingAlertData" resultMap="NursingAlertDataResult">
+        select * from nursing_alert_data a
+        <where>
+            <if test="alertNo != null  and alertNo != ''"> and a.alert_no like concat('%', #{alertNo}, '%')</if>
+            <if test="elderId != null "> and a.elder_id = #{elderId}</if>
+            <if test="bedId != null "> and a.bed_id = #{bedId}</if>
+            <if test="deviceId != null "> and a.device_id = #{deviceId}</if>
+            <if test="ruleId != null "> and a.rule_id = #{ruleId}</if>
+            <if test="alertType != null "> and a.alert_type = #{alertType}</if>
+            <if test="level != null "> and a.level = #{level}</if>
+            <if test="status != null "> and a.status = #{status}</if>
+            <if test="alertTime != null "> and a.alert_time = #{alertTime}</if>
+        </where>
+        order by a.alert_time desc, a.level desc
+    </select>
+
+    <select id="selectNursingAlertDataById" parameterType="Long" resultMap="NursingAlertDataResult">
+        select * from nursing_alert_data where id = #{id}
+    </select>
+
+    <insert id="insertNursingAlertData" parameterType="NursingAlertData" useGeneratedKeys="true" keyProperty="id">
+        insert into nursing_alert_data
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="alertNo != null">alert_no,</if>
+            <if test="elderId != null">elder_id,</if>
+            <if test="bedId != null">bed_id,</if>
+            <if test="deviceId != null">device_id,</if>
+            <if test="ruleId != null">rule_id,</if>
+            <if test="alertType != null">alert_type,</if>
+            <if test="level != null">level,</if>
+            <if test="alertValue != null">alert_value,</if>
+            <if test="alertTime != null">alert_time,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="alertNo != null">#{alertNo},</if>
+            <if test="elderId != null">#{elderId},</if>
+            <if test="bedId != null">#{bedId},</if>
+            <if test="deviceId != null">#{deviceId},</if>
+            <if test="ruleId != null">#{ruleId},</if>
+            <if test="alertType != null">#{alertType},</if>
+            <if test="level != null">#{level},</if>
+            <if test="alertValue != null">#{alertValue},</if>
+            <if test="alertTime != null">#{alertTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateNursingAlertData" parameterType="NursingAlertData">
+        update nursing_alert_data
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="alertNo != null">alert_no = #{alertNo},</if>
+            <if test="elderId != null">elder_id = #{elderId},</if>
+            <if test="bedId != null">bed_id = #{bedId},</if>
+            <if test="deviceId != null">device_id = #{deviceId},</if>
+            <if test="ruleId != null">rule_id = #{ruleId},</if>
+            <if test="alertType != null">alert_type = #{alertType},</if>
+            <if test="level != null">level = #{level},</if>
+            <if test="alertValue != null">alert_value = #{alertValue},</if>
+            <if test="alertTime != null">alert_time = #{alertTime},</if>
+            <if test="handleTime != null">handle_time = #{handleTime},</if>
+            <if test="handleBy != null">handle_by = #{handleBy},</if>
+            <if test="handleResult != null">handle_result = #{handleResult},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteNursingAlertDataById" parameterType="Long">
+        delete from nursing_alert_data where id = #{id}
+    </delete>
+
+    <delete id="deleteNursingAlertDataByIds" parameterType="String">
+        delete from nursing_alert_data where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

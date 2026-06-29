@@ -20,6 +20,7 @@ import com.tong.common.core.controller.BaseController;
 import com.tong.common.enums.BusinessType;
 import com.tong.nursing.domain.NursingArrange;
 import com.tong.nursing.service.INursingArrangeService;
+import com.tong.nursing.vo.NursingArrangeVO;
 import com.tong.common.utils.poi.ExcelUtil;
 import com.tong.common.core.domain.R;
 import com.tong.common.core.page.TableDataInfo;
@@ -46,13 +47,13 @@ public class NursingArrangeController extends BaseController
      * 查询护理排班列表
      */
     @PreAuthorize("@ss.hasPermi('nursing:arrange:list')")
-    @ApiOperation(value = "查询护理排班列表", notes = "分页返回护理排班列表")
+    @ApiOperation(value = "查询护理排班列表", notes = "分页返回护理排班列表（含老人姓名、项目名称、护理员姓名）")
     @GetMapping("/list")
-    public TableDataInfo<NursingArrange> list(NursingArrange nursingArrange)
+    public TableDataInfo<NursingArrangeVO> list(NursingArrange nursingArrange)
     {
         startPage();
-        List<NursingArrange> list = nursingArrangeService.selectNursingArrangeList(nursingArrange);
-        TableDataInfo<NursingArrange> rspData = new TableDataInfo<>();
+        List<NursingArrangeVO> list = nursingArrangeService.selectArrangeVOList(nursingArrange);
+        TableDataInfo<NursingArrangeVO> rspData = new TableDataInfo<>();
         rspData.setCode(HttpStatus.SUCCESS);
         rspData.setMsg("查询成功");
         rspData.setRows(list);
@@ -78,12 +79,12 @@ public class NursingArrangeController extends BaseController
      * 获取护理排班详细信息
      */
     @PreAuthorize("@ss.hasPermi('nursing:arrange:query')")
-    @ApiOperation(value = "获取护理排班详细信息", notes = "返回单个护理排班对象详情")
+    @ApiOperation(value = "获取护理排班详细信息", notes = "返回单个护理排班详情（含老人姓名、项目名称、护理员姓名）")
     @ApiImplicitParam(name = "id", value = "护理排班ID", required = true, dataType = "Long", paramType = "path")
     @GetMapping(value = "/{id}")
-    public R<NursingArrange> getInfo(@PathVariable("id") Long id)
+    public R<NursingArrangeVO> getInfo(@PathVariable("id") Long id)
     {
-        return R.ok(nursingArrangeService.selectNursingArrangeById(id));
+        return R.ok(nursingArrangeService.selectArrangeVOById(id));
     }
 
     /**

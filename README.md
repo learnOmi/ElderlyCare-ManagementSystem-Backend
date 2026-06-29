@@ -43,7 +43,7 @@ ElderlyCare (父工程)
 | 入住管理 | 入住申请、入住审核、退住管理 | nursing_ | 已实现 |
 | 健康评估 | 评估记录、评分管理、建议等级 | nursing_ | 已实现 |
 | 护理排班 | 排班计划、执行记录、状态流转 | nursing_ | 已实现 |
-| 告警管理 | 告警规则、告警数据、告警处理 | nursing_ | 设计完成 |
+| 告警管理 | 告警规则、告警数据、告警处理 | nursing_ | 已实现 |
 | 合同管理 | 合同签订、合同变更、合同终止 | nursing_ | 设计完成 |
 | 预约管理 | 来访预约、入住预约、参观预约 | nursing_ | 设计完成 |
 
@@ -66,8 +66,8 @@ ElderlyCare (父工程)
 | 13 | nursing_check_in | 入住申请表 | 入住管理 |
 | 14 | nursing_health_assessment | 健康评估表 | 健康评估 | ✅ 代码已实现 |
 | 15 | nursing_arrange | 护理排班表 | 护理排班 | ✅ 代码已实现 |
-| 16 | nursing_alert_rule | 告警规则表 | 告警管理 | ⏳ 待开发 |
-| 17 | nursing_alert_data | 告警数据表 | 告警管理 | ⏳ 待开发 |
+| 16 | nursing_alert_rule | 告警规则表 | 告警管理 | ✅ 代码已实现 |
+| 17 | nursing_alert_data | 告警数据表 | 告警管理 | ✅ 代码已实现 |
 | 18 | nursing_contract | 合同表 | 合同管理 | ⏳ 待开发 |
 | 19 | nursing_reservation | 预约表 | 预约管理 | ⏳ 待开发 |
 
@@ -340,15 +340,51 @@ public R<NursingCheckInDetailVO> getDetail(@PathVariable("id") Long id) {
 
 ***
 
-### 第五阶段：告警与设备管理（规划中）
+### 第五阶段：告警管理（已完成 ✅）
 
-**目标**: 建立智能告警体系，实现设备数据接入与告警
+**目标**: 建立智能告警体系，实现告警规则与告警数据处理
 
-**计划实现**:
-- 告警规则配置（多种告警类型、阈值设置、通知方式）
-- 告警数据管理（告警产生、处理流程、处理记录）
-- 设备管理与绑定
-- 智能床位数据接入预留
+**完成内容**:
+
+| 序号 | 功能组件 | 实现方式 | 状态 |
+|------|----------|----------|------|
+| 1 | 告警规则管理 (NursingAlertRule) | Controller + Service + Mapper + Domain 四层架构，支持 CRUD、列表查询、导出 | ✅ 完成 |
+| 2 | 告警数据管理 (NursingAlertData) | Controller + Service + Mapper + Domain 四层架构，支持 CRUD、列表查询、导出 | ✅ 完成 |
+| 3 | 告警数据VO (NursingAlertDataVO) | 包含老人姓名、床位名称、设备名称、规则名称等展示字段 | ✅ 完成 |
+| 4 | 告警处理/忽略接口 | 处理告警（状态改为已处理）、忽略告警（状态改为已忽略），含状态流转校验 | ✅ 完成 |
+| 5 | 告警编号自动生成 | Service层insert时生成，格式 ALT-yyyyMMdd-001 | ✅ 完成 |
+| 6 | 常量补充 | 告警类型（离床/坠床/心率异常/呼吸异常/其他）、通知方式（系统通知/短信/电话） | ✅ 完成 |
+
+**接口清单**:
+
+| 模块 | 接口 | 方法 | 说明 |
+|------|------|------|------|
+| 告警规则 | /nursing/alertRule/list | GET | 分页查询告警规则列表 |
+| 告警规则 | /nursing/alertRule/{id} | GET | 获取告警规则详情 |
+| 告警规则 | /nursing/alertRule | POST | 新增告警规则 |
+| 告警规则 | /nursing/alertRule | PUT | 修改告警规则 |
+| 告警规则 | /nursing/alertRule/{ids} | DELETE | 批量删除告警规则 |
+| 告警数据 | /nursing/alertData/list | GET | 分页查询告警数据（含关联信息） |
+| 告警数据 | /nursing/alertData/{id} | GET | 获取告警数据详情 |
+| 告警数据 | /nursing/alertData | POST | 新增告警数据（编号自动生成） |
+| 告警数据 | /nursing/alertData | PUT | 修改告警数据 |
+| 告警数据 | /nursing/alertData/handle/{id} | PUT | 处理告警（状态改为已处理） |
+| 告警数据 | /nursing/alertData/ignore/{id} | PUT | 忽略告警（状态改为已忽略） |
+| 告警数据 | /nursing/alertData/{ids} | DELETE | 批量删除告警数据 |
+
+**新增文件**（13个）：
+- Entity: NursingAlertRule.java、NursingAlertData.java
+- VO: NursingAlertDataVO.java
+- Mapper: NursingAlertRuleMapper.java、NursingAlertDataMapper.java
+- XML: NursingAlertRuleMapper.xml、NursingAlertDataMapper.xml
+- Service: INursingAlertRuleService.java、INursingAlertDataService.java
+- ServiceImpl: NursingAlertRuleServiceImpl.java、NursingAlertDataServiceImpl.java
+- Controller: NursingAlertRuleController.java、NursingAlertDataController.java
+
+**第五阶段难点与解决方案**:
+1. **VO关联查询** → 告警数据通过LEFT JOIN关联老人、床位、设备、规则表，一次SQL查出所有展示字段
+2. **告警编号自动生成** → Service层insert时生成，格式ALT-yyyyMMdd-001
+3. **状态流转校验** → 已处理/已忽略的告警不允许重复处理，防止状态不一致
 
 ***
 
