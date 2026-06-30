@@ -51,6 +51,17 @@ public class NursingRoomTypeServiceImpl implements INursingRoomTypeService
     }
 
     /**
+     * 查询全部房型（下拉框/全量列表用）
+     *
+     * @return 房型集合
+     */
+    @Override
+    public List<NursingRoomType> selectNursingRoomTypeAll()
+    {
+        return nursingRoomTypeMapper.selectNursingRoomTypeAll();
+    }
+
+    /**
      * 新增房型
      *
      * @param nursingRoomType 房型

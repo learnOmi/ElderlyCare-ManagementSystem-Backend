@@ -18,6 +18,7 @@ import com.tong.common.constant.HttpStatus;
 import com.tong.common.core.controller.BaseController;
 import com.tong.common.enums.BusinessType;
 import com.tong.nursing.domain.NursingLevel;
+import com.tong.nursing.vo.NursingLevelVO;
 import com.tong.nursing.service.INursingLevelService;
 import com.tong.common.utils.poi.ExcelUtil;
 import com.tong.common.core.domain.R;
@@ -60,6 +61,17 @@ public class NursingLevelController extends BaseController
     }
 
     /**
+     * 查询全部护理等级（下拉框用）
+     */
+    @PreAuthorize("@ss.hasPermi('nursing:level:list')")
+    @ApiOperation(value = "查询全部护理等级", notes = "下拉框用，返回全部启用的护理等级列表，不分页")
+    @GetMapping("/listAll")
+    public R<List<NursingLevel>> listAll()
+    {
+        return R.ok(nursingLevelService.selectNursingLevelAll());
+    }
+
+    /**
      * 导出护理等级列表
      */
     @PreAuthorize("@ss.hasPermi('nursing:level:export')")
@@ -83,6 +95,18 @@ public class NursingLevelController extends BaseController
     public R<NursingLevel> getInfo(@PathVariable("id") Integer id)
     {
         return R.ok(nursingLevelService.selectNursingLevelById(id));
+    }
+
+    /**
+     * 获取护理等级详情（含护理计划名称和项目列表）
+     */
+    @PreAuthorize("@ss.hasPermi('nursing:level:query')")
+    @ApiOperation(value = "获取护理等级详情", notes = "返回护理等级详情（含护理计划名称和项目列表）")
+    @ApiImplicitParam(name = "id", value = "护理等级ID", required = true, dataType = "Integer", paramType = "path")
+    @GetMapping(value = "/detail/{id}")
+    public R<NursingLevelVO> getDetail(@PathVariable("id") Integer id)
+    {
+        return R.ok(nursingLevelService.selectNursingLevelVOById(id));
     }
 
     /**

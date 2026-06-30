@@ -74,4 +74,20 @@ public interface NursingProjectPlanMapper
      * @return 结果
      */
     public int deleteNursingProjectPlanByPlanIds(Long[] planIds);
+
+    /**
+     * 根据计划ID查询项目计划关联
+     *
+     * @param planId 计划ID
+     * @return 项目计划关联列表
+     */
+    public List<NursingProjectPlan> selectNursingProjectPlanByPlanId(Long planId);
+
+    /**
+     * 批量插入项目计划关联
+     *
+     * @param projectPlans 项目计划关联列表
+     * @return 结果
+     */
+    public int batchInsertNursingProjectPlan(List<NursingProjectPlan> projectPlans);
 }

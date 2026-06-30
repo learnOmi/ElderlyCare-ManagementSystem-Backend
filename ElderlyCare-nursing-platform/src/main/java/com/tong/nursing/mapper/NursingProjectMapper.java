@@ -28,6 +28,13 @@ public interface NursingProjectMapper
     public List<NursingProject> selectNursingProjectList(NursingProject nursingProject);
 
     /**
+     * 查询全部护理项目（下拉框/全量列表用）
+     *
+     * @return 护理项目集合
+     */
+    public List<NursingProject> selectNursingProjectAll();
+
+    /**
      * 新增护理项目
      *
      * @param nursingProject 护理项目

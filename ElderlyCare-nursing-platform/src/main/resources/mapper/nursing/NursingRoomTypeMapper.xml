@@ -31,6 +31,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         order by id asc
     </select>
 
+    <select id="selectNursingRoomTypeAll" resultMap="NursingRoomTypeResult">
+        <include refid="selectNursingRoomTypeVo"/>
+        where status = 1
+        order by id asc
+    </select>
+
     <select id="selectNursingRoomTypeById" parameterType="Long" resultMap="NursingRoomTypeResult">
         <include refid="selectNursingRoomTypeVo"/>
         where id = #{id}

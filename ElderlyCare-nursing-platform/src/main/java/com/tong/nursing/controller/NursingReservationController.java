@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.github.pagehelper.PageInfo;
 import com.tong.common.annotation.Log;
@@ -23,6 +24,7 @@ import com.tong.common.utils.poi.ExcelUtil;
 import com.tong.common.core.domain.R;
 import com.tong.common.core.page.TableDataInfo;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 
@@ -107,6 +109,37 @@ public class NursingReservationController extends BaseController
     public R<Void> edit(@RequestBody NursingReservation nursingReservation)
     {
         int rows = nursingReservationService.updateNursingReservation(nursingReservation);
+        return rows > 0 ? R.ok() : R.fail();
+    }
+
+    /**
+     * 确认预约
+     */
+    @PreAuthorize("@ss.hasPermi('nursing:reservation:edit')")
+    @Log(title = "预约", businessType = BusinessType.UPDATE)
+    @ApiOperation(value = "确认预约", notes = "将预约状态从待确认改为已确认")
+    @ApiImplicitParam(name = "id", value = "预约ID", required = true, dataType = "Long", paramType = "path")
+    @PutMapping("/confirm/{id}")
+    public R<Void> confirm(@PathVariable("id") Long id)
+    {
+        int rows = nursingReservationService.confirmReservation(id);
+        return rows > 0 ? R.ok() : R.fail();
+    }
+
+    /**
+     * 取消预约
+     */
+    @PreAuthorize("@ss.hasPermi('nursing:reservation:edit')")
+    @Log(title = "预约", businessType = BusinessType.UPDATE)
+    @ApiOperation(value = "取消预约", notes = "将预约状态改为已取消")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "id", value = "预约ID", required = true, dataType = "Long", paramType = "path"),
+        @ApiImplicitParam(name = "cancelReason", value = "取消原因", required = false, dataType = "String", paramType = "query")
+    })
+    @PutMapping("/cancel/{id}")
+    public R<Void> cancel(@PathVariable("id") Long id, @RequestParam(required = false) String cancelReason)
+    {
+        int rows = nursingReservationService.cancelReservation(id, cancelReason);
         return rows > 0 ? R.ok() : R.fail();
     }
 

@@ -44,6 +44,23 @@ public interface INursingReservationService
     public int updateNursingReservation(NursingReservation nursingReservation);
 
     /**
+     * 确认预约
+     *
+     * @param id 预约主键
+     * @return 结果
+     */
+    public int confirmReservation(Long id);
+
+    /**
+     * 取消预约
+     *
+     * @param id 预约主键
+     * @param cancelReason 取消原因
+     * @return 结果
+     */
+    public int cancelReservation(Long id, String cancelReason);
+
+    /**
      * 批量删除预约
      *
      * @param ids 需要删除的预约主键集合

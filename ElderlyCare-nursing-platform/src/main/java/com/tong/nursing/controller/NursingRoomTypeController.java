@@ -60,6 +60,17 @@ public class NursingRoomTypeController extends BaseController
     }
 
     /**
+     * 查询全部房型（下拉框用）
+     */
+    @PreAuthorize("@ss.hasPermi('nursing:roomType:list')")
+    @ApiOperation(value = "查询全部房型", notes = "下拉框用，返回全部启用的房型列表，不分页")
+    @GetMapping("/listAll")
+    public R<List<NursingRoomType>> listAll()
+    {
+        return R.ok(nursingRoomTypeService.selectNursingRoomTypeAll());
+    }
+
+    /**
      * 导出房型列表
      */
     @PreAuthorize("@ss.hasPermi('nursing:roomType:export')")

@@ -28,6 +28,13 @@ public interface NursingLevelMapper
     public List<NursingLevel> selectNursingLevelList(NursingLevel nursingLevel);
 
     /**
+     * 查询全部护理等级（下拉框/全量列表用）
+     *
+     * @return 护理等级集合
+     */
+    public List<NursingLevel> selectNursingLevelAll();
+
+    /**
      * 新增护理等级
      * 
      * @param nursingLevel 护理等级

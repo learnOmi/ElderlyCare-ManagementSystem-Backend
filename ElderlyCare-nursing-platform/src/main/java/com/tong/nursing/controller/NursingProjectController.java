@@ -60,6 +60,17 @@ public class NursingProjectController extends BaseController
     }
 
     /**
+     * 查询全部护理项目（下拉框用）
+     */
+    @PreAuthorize("@ss.hasPermi('nursing:project:list')")
+    @ApiOperation(value = "查询全部护理项目", notes = "下拉框用，返回全部启用的护理项目列表，不分页")
+    @GetMapping("/listAll")
+    public R<List<NursingProject>> listAll()
+    {
+        return R.ok(nursingProjectService.selectNursingProjectAll());
+    }
+
+    /**
      * 导出护理项目列表
      */
     @PreAuthorize("@ss.hasPermi('nursing:project:export')")

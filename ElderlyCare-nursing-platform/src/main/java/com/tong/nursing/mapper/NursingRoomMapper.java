@@ -28,6 +28,14 @@ public interface NursingRoomMapper
     public List<NursingRoom> selectNursingRoomList(NursingRoom nursingRoom);
 
     /**
+     * 按楼层ID查询房间列表（下拉框用）
+     *
+     * @param floorId 楼层ID
+     * @return 房间集合
+     */
+    public List<NursingRoom> selectRoomsByFloorId(Long floorId);
+
+    /**
      * 新增房间
      *
      * @param nursingRoom 房间

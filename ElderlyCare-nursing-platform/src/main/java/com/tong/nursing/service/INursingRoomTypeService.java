@@ -28,6 +28,13 @@ public interface INursingRoomTypeService
     public List<NursingRoomType> selectNursingRoomTypeList(NursingRoomType nursingRoomType);
 
     /**
+     * 查询全部房型（下拉框/全量列表用）
+     *
+     * @return 房型集合
+     */
+    public List<NursingRoomType> selectNursingRoomTypeAll();
+
+    /**
      * 新增房型
      *
      * @param nursingRoomType 房型

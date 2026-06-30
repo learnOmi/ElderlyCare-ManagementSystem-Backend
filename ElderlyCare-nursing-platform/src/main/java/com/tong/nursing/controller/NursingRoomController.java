@@ -60,6 +60,18 @@ public class NursingRoomController extends BaseController
     }
 
     /**
+     * 按楼层ID查询房间列表（下拉框用）
+     */
+    @PreAuthorize("@ss.hasPermi('nursing:room:list')")
+    @ApiOperation(value = "按楼层查询房间", notes = "下拉框用，返回指定楼层下的房间列表，不分页")
+    @ApiImplicitParam(name = "floorId", value = "楼层ID", required = true, dataType = "Long", paramType = "path")
+    @GetMapping("/getRoomsByFloorId/{floorId}")
+    public R<List<NursingRoom>> getRoomsByFloorId(@PathVariable("floorId") Long floorId)
+    {
+        return R.ok(nursingRoomService.selectRoomsByFloorId(floorId));
+    }
+
+    /**
      * 导出房间列表
      */
     @PreAuthorize("@ss.hasPermi('nursing:room:export')")

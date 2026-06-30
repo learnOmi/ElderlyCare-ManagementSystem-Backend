@@ -52,6 +52,17 @@ public class NursingFloorServiceImpl implements INursingFloorService
     }
 
     /**
+     * 查询全部楼层（下拉框/全量列表用）
+     *
+     * @return 楼层集合
+     */
+    @Override
+    public List<NursingFloor> selectNursingFloorAll()
+    {
+        return nursingFloorMapper.selectNursingFloorAll();
+    }
+
+    /**
      * 查询楼层树形结构（含房间和床位）
      *
      * @param id 楼层主键

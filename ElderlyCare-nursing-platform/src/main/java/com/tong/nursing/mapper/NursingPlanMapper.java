@@ -28,6 +28,13 @@ public interface NursingPlanMapper
     public List<NursingPlan> selectNursingPlanList(NursingPlan nursingPlan);
 
     /**
+     * 查询全部护理计划（下拉框/全量列表用）
+     *
+     * @return 护理计划集合
+     */
+    public List<NursingPlan> selectNursingPlanAll();
+
+    /**
      * 新增护理计划
      * 
      * @param nursingPlan 护理计划

@@ -29,6 +29,13 @@ public interface INursingFloorService
     public List<NursingFloor> selectNursingFloorList(NursingFloor nursingFloor);
 
     /**
+     * 查询全部楼层（下拉框/全量列表用）
+     *
+     * @return 楼层集合
+     */
+    public List<NursingFloor> selectNursingFloorAll();
+
+    /**
      * 查询楼层树形结构（含房间和床位）
      *
      * @param id 楼层主键

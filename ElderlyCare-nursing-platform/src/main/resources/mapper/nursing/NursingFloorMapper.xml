@@ -29,6 +29,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         order by floor_no asc
     </select>
 
+    <select id="selectNursingFloorAll" resultMap="NursingFloorResult">
+        <include refid="selectNursingFloorVo"/>
+        where status = 1
+        order by floor_no asc
+    </select>
+
     <select id="selectNursingFloorById" parameterType="Long" resultMap="NursingFloorResult">
         <include refid="selectNursingFloorVo"/>
         where id = #{id}

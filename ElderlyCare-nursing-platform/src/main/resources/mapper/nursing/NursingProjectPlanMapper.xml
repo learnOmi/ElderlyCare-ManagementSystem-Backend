@@ -102,4 +102,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{planId}
         </foreach>
     </delete>
+
+    <select id="selectNursingProjectPlanByPlanId" parameterType="Long" resultMap="NursingProjectPlanResult">
+        <include refid="selectNursingProjectPlanVo"/>
+        where plan_id = #{planId}
+    </select>
+
+    <insert id="batchInsertNursingProjectPlan" parameterType="java.util.List">
+        insert into nursing_project_plan (plan_id, project_id, execute_time, execute_cycle, execute_frequency, create_time, create_by)
+        values
+        <foreach item="item" collection="list" separator=",">
+            (#{item.planId}, #{item.projectId}, #{item.executeTime}, #{item.executeCycle}, #{item.executeFrequency}, #{item.createTime}, #{item.createBy})
+        </foreach>
+    </insert>
 </mapper>

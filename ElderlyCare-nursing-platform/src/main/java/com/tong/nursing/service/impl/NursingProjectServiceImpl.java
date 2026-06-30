@@ -45,6 +45,17 @@ public class NursingProjectServiceImpl implements INursingProjectService
     }
 
     /**
+     * 查询全部护理项目（下拉框/全量列表用）
+     *
+     * @return 护理项目集合
+     */
+    @Override
+    public List<NursingProject> selectNursingProjectAll()
+    {
+        return nursingProjectMapper.selectNursingProjectAll();
+    }
+
+    /**
      * 新增护理项目
      *
      * @param nursingProject 护理项目

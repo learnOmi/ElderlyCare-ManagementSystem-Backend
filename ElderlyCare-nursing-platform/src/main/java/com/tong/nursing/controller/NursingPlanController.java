@@ -18,6 +18,8 @@ import com.tong.common.constant.HttpStatus;
 import com.tong.common.core.controller.BaseController;
 import com.tong.common.enums.BusinessType;
 import com.tong.nursing.domain.NursingPlan;
+import com.tong.nursing.dto.NursingPlanDTO;
+import com.tong.nursing.vo.NursingPlanVO;
 import com.tong.nursing.service.INursingPlanService;
 import com.tong.common.utils.poi.ExcelUtil;
 import com.tong.common.core.domain.R;
@@ -60,6 +62,17 @@ public class NursingPlanController extends BaseController
     }
 
     /**
+     * 查询全部护理计划（下拉框用）
+     */
+    @PreAuthorize("@ss.hasPermi('nursing:plan:list')")
+    @ApiOperation(value = "查询全部护理计划", notes = "下拉框用，返回全部启用的护理计划列表，不分页")
+    @GetMapping("/listAll")
+    public R<List<NursingPlan>> listAll()
+    {
+        return R.ok(nursingPlanService.selectNursingPlanAll());
+    }
+
+    /**
      * 导出护理计划列表
      */
     @PreAuthorize("@ss.hasPermi('nursing:plan:export')")
@@ -86,15 +99,27 @@ public class NursingPlanController extends BaseController
     }
 
     /**
+     * 获取护理计划详情（含项目列表）
+     */
+    @PreAuthorize("@ss.hasPermi('nursing:plan:query')")
+    @ApiOperation(value = "获取护理计划详情", notes = "返回护理计划详情（含关联项目列表）")
+    @ApiImplicitParam(name = "id", value = "护理计划ID", required = true, dataType = "Long", paramType = "path")
+    @GetMapping(value = "/detail/{id}")
+    public R<NursingPlanVO> getDetail(@PathVariable("id") Long id)
+    {
+        return R.ok(nursingPlanService.selectNursingPlanVOById(id));
+    }
+
+    /**
      * 新增护理计划
      */
     @PreAuthorize("@ss.hasPermi('nursing:plan:add')")
     @Log(title = "护理计划", businessType = BusinessType.INSERT)
     @ApiOperation(value = "新增护理计划", notes = "返回操作结果状态")
     @PostMapping
-    public R<Void> add(@RequestBody NursingPlan nursingPlan)
+    public R<Void> add(@RequestBody NursingPlanDTO dto)
     {
-        int rows = nursingPlanService.insertNursingPlan(nursingPlan);
+        int rows = nursingPlanService.insertNursingPlan(dto);
         return rows > 0 ? R.ok() : R.fail();
     }
 
@@ -105,9 +130,9 @@ public class NursingPlanController extends BaseController
     @Log(title = "护理计划", businessType = BusinessType.UPDATE)
     @ApiOperation(value = "修改护理计划", notes = "返回操作结果状态")
     @PutMapping
-    public R<Void> edit(@RequestBody NursingPlan nursingPlan)
+    public R<Void> edit(@RequestBody NursingPlanDTO dto)
     {
-        int rows = nursingPlanService.updateNursingPlan(nursingPlan);
+        int rows = nursingPlanService.updateNursingPlan(dto);
         return rows > 0 ? R.ok() : R.fail();
     }
 

@@ -32,6 +32,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
 
+    <select id="selectNursingProjectAll" resultMap="NursingProjectResult">
+        <include refid="selectNursingProjectVo"/>
+        where status = 1
+        order by order_no asc
+    </select>
+
     <select id="selectNursingProjectById" parameterType="Long" resultMap="NursingProjectResult">
         <include refid="selectNursingProjectVo"/>
         where id = #{id}

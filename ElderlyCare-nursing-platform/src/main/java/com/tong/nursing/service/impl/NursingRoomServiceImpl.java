@@ -51,6 +51,18 @@ public class NursingRoomServiceImpl implements INursingRoomService
     }
 
     /**
+     * 按楼层ID查询房间列表（下拉框用）
+     *
+     * @param floorId 楼层ID
+     * @return 房间集合
+     */
+    @Override
+    public List<NursingRoom> selectRoomsByFloorId(Long floorId)
+    {
+        return nursingRoomMapper.selectRoomsByFloorId(floorId);
+    }
+
+    /**
      * 新增房间
      *
      * @param nursingRoom 房间
