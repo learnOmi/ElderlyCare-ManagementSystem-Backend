@@ -138,4 +138,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <select id="selectElderByIdCard" parameterType="String" resultMap="NursingElderResult">
+        <include refid="selectNursingElderVo"/>
+        where e.id_card = #{idCard}
+    </select>
 </mapper>

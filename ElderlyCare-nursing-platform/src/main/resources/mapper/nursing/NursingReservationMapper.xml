@@ -114,4 +114,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
 
+    <update id="updateExpiredReservationStatus" parameterType="Date">
+        update nursing_reservation
+        set status = 3, cancel_reason = '预约已过期', update_time = now()
+        where reservation_date <![CDATA[<]]> #{currentDate} and status <![CDATA[<]]> 2
+    </update>
+
 </mapper>

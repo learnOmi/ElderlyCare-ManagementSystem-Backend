@@ -1,6 +1,8 @@
 package com.tong.nursing.controller;
 
+import java.io.InputStream;
 import java.util.List;
+import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,17 +13,21 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import com.github.pagehelper.PageInfo;
 import com.tong.common.annotation.Log;
 import com.tong.common.constant.HttpStatus;
 import com.tong.common.core.controller.BaseController;
 import com.tong.common.enums.BusinessType;
+import com.tong.common.exception.ServiceException;
 import com.tong.nursing.domain.NursingHealthAssessment;
 import com.tong.nursing.service.INursingHealthAssessmentService;
 import com.tong.common.utils.poi.ExcelUtil;
 import com.tong.common.core.domain.R;
 import com.tong.common.core.page.TableDataInfo;
+import com.tong.oss.client.OSSAliyunFileStorageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -39,6 +45,9 @@ public class NursingHealthAssessmentController extends BaseController
 {
     @Autowired
     private INursingHealthAssessmentService nursingHealthAssessmentService;
+
+    @Autowired
+    private OSSAliyunFileStorageService ossAliyunFileStorageService;
 
     /**
      * 查询健康评估列表
@@ -122,5 +131,45 @@ public class NursingHealthAssessmentController extends BaseController
     {
         int rows = nursingHealthAssessmentService.deleteNursingHealthAssessmentByIds(ids);
         return rows > 0 ? R.ok() : R.fail();
+    }
+
+    /**
+     * 上传健康评估报告PDF
+     */
+    @PreAuthorize("@ss.hasPermi('nursing:healthAssessment:edit')")
+    @Log(title = "健康评估", businessType = BusinessType.UPDATE)
+    @ApiOperation(value = "上传健康评估报告PDF", notes = "上传PDF文件到OSS，并更新评估记录的报告路径")
+    @ApiImplicitParam(name = "id", value = "健康评估ID", required = true, dataType = "Long", paramType = "path")
+    @PostMapping("/uploadReport/{id}")
+    public R<String> uploadReport(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file)
+    {
+        if (file.isEmpty())
+        {
+            throw new ServiceException("上传文件不能为空");
+        }
+
+        String originalFilename = file.getOriginalFilename();
+        if (originalFilename == null || !originalFilename.toLowerCase().endsWith(".pdf"))
+        {
+            throw new ServiceException("仅支持PDF格式文件");
+        }
+
+        String objectName = "nursing/health-assessment/" + UUID.randomUUID().toString() + ".pdf";
+        
+        try (InputStream inputStream = file.getInputStream())
+        {
+            String url = ossAliyunFileStorageService.store(objectName, inputStream);
+            
+            NursingHealthAssessment assessment = new NursingHealthAssessment();
+            assessment.setId(id);
+            assessment.setReportPath(url);
+            nursingHealthAssessmentService.updateNursingHealthAssessment(assessment);
+            
+            return R.ok(url);
+        }
+        catch (Exception e)
+        {
+            throw new ServiceException("文件上传失败：" + e.getMessage());
+        }
     }
 }

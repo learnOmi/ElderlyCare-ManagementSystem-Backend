@@ -44,6 +44,13 @@ public interface INursingFloorService
     public FloorTreeVO selectFloorTreeById(Long id);
 
     /**
+     * 查询所有楼层树形结构（含房间和床位）
+     *
+     * @return 楼层树形结构列表
+     */
+    public List<FloorTreeVO> selectAllFloorTree();
+
+    /**
      * 新增楼层
      *
      * @param nursingFloor 楼层

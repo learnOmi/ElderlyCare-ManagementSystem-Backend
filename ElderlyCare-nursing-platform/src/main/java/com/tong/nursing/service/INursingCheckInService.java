@@ -76,4 +76,12 @@ public interface INursingCheckInService
      * @return 结果
      */
     public int deleteNursingCheckInById(Long id);
+
+    /**
+     * 入住申请（完整流程）
+     *
+     * @param dto 入住申请DTO
+     * @return 入住申请ID
+     */
+    public Long apply(com.tong.nursing.dto.CheckInApplyDto dto);
 }

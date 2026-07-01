@@ -29,6 +29,24 @@
             <artifactId>lombok</artifactId>
         </dependency>
 
+        <!-- Quartz定时任务 -->
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+        </dependency>
+
+        <!-- 定时任务模块 -->
+        <dependency>
+            <groupId>com.tong</groupId>
+            <artifactId>tong-quartz</artifactId>
+        </dependency>
+
+        <!-- OSS对象存储 -->
+        <dependency>
+            <groupId>com.tong</groupId>
+            <artifactId>tong-oss</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

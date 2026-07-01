@@ -60,4 +60,12 @@ public interface NursingReservationMapper
      * @return 结果
      */
     public int deleteNursingReservationByIds(Long[] ids);
+
+    /**
+     * 更新过期预约状态为已取消
+     *
+     * @param currentDate 当前日期
+     * @return 影响的记录数
+     */
+    public int updateExpiredReservationStatus(java.util.Date currentDate);
 }

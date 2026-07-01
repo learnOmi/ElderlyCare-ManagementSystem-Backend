@@ -60,4 +60,12 @@ public interface NursingContractMapper
      * @return 结果
      */
     public int deleteNursingContractByIds(Long[] ids);
+
+    /**
+     * 更新过期合同状态为已到期
+     *
+     * @param currentDate 当前日期
+     * @return 影响的记录数
+     */
+    public int updateExpiredContractStatus(java.util.Date currentDate);
 }

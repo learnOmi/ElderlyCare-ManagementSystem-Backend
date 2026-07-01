@@ -84,6 +84,17 @@ public class NursingFloorController extends BaseController
     }
 
     /**
+     * 查询所有楼层树形结构（含房间和床位）
+     */
+    @PreAuthorize("@ss.hasPermi('nursing:floor:query')")
+    @ApiOperation(value = "查询所有楼层树形结构", notes = "返回所有楼层→房间→床位三级嵌套结构")
+    @GetMapping(value = "/tree")
+    public R<List<FloorTreeVO>> allTree()
+    {
+        return R.ok(nursingFloorService.selectAllFloorTree());
+    }
+
+    /**
      * 导出楼层列表
      */
     @PreAuthorize("@ss.hasPermi('nursing:floor:export')")

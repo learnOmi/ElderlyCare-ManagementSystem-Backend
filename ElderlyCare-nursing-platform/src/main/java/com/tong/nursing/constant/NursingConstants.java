@@ -74,6 +74,39 @@ public class NursingConstants
     /** 入住状态-已退住 */
     public static final Integer CHECK_IN_STATUS_OUT = 2;
 
+    /** 入住状态常量内部类 */
+    public static final class CheckInStatus {
+        public static final Integer PENDING = 0;
+        public static final Integer APPROVED = 1;
+        public static final Integer CHECKED_IN = 2;
+        public static final Integer CHECKED_OUT = 3;
+        public static final Integer REJECTED = 4;
+    }
+
+    /** 床位状态常量内部类 */
+    public static final class BedStatus {
+        public static final Integer FREE = 0;
+        public static final Integer OCCUPIED = 1;
+        public static final Integer MAINTENANCE = 2;
+        public static final Integer RESERVED = 3;
+    }
+
+    /** 老人入住状态常量内部类 */
+    public static final class ElderCheckInStatus {
+        public static final Integer NOT_CHECKED_IN = 0;
+        public static final Integer CHECKED_IN = 1;
+        public static final Integer CHECKED_OUT = 2;
+    }
+
+    /** 合同状态常量内部类 */
+    public static final class ContractStatus {
+        public static final Integer DRAFT = 0;
+        public static final Integer SIGNED = 1;
+        public static final Integer EFFECTIVE = 2;
+        public static final Integer EXPIRED = 3;
+        public static final Integer TERMINATED = 4;
+    }
+
     // ==================== 健康状态 ====================
 
     /** 健康状态-自理 */
@@ -215,4 +248,12 @@ public class NursingConstants
 
     /** 预约类型-参观预约 */
     public static final Integer RESERVATION_TYPE_TOUR = 2;
+
+    // ==================== Redis Key ====================
+
+    /** 护理等级缓存Key */
+    public static final String REDIS_LEVEL_ALL_KEY = "nursing:level:all";
+
+    /** 缓存过期时间（5分钟） */
+    public static final int REDIS_CACHE_EXPIRE_MINUTES = 5;
 }

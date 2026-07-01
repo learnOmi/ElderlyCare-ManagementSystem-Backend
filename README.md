@@ -414,7 +414,7 @@ public R<NursingCheckInDetailVO> getDetail(@PathVariable("id") Long id) {
 
 ***
 
-### 第八阶段：系统加固与核心业务完善（进行中 🔧）
+### 第八阶段：系统加固与核心业务完善（已完成 ✅）
 
 **目标**: 修复 CRITICAL 级别问题，完善核心业务流程，补齐缺失接口
 
@@ -446,6 +446,46 @@ public R<NursingCheckInDetailVO> getDetail(@PathVariable("id") Long id) {
 - 护理等级全量列表接口 listAll ✅
 - 按楼层查询房间接口 getRoomsByFloorId ✅
 - 导出权限菜单补齐 SQL ✅
+
+***
+
+### 第九阶段：入住流程完善与定时任务（已完成 ✅）
+
+**目标**: 完善入住申请完整流程，实现定时任务自动处理
+
+**完成内容**:
+
+| 序号 | 功能组件 | 实现方式 | 状态 |
+|------|----------|----------|------|
+| 1 | 入住申请 apply() 流程 | 8步完整入住流程，含事务管理 | ✅ 完成 |
+| 2 | CheckInConfig 模块 | 入住配置表 + CRUD 全链路 | ✅ 完成 |
+| 3 | 合同状态自动更新 | Quartz 定时任务，每天凌晨2点执行 | ✅ 完成 |
+| 4 | 预约过期自动取消 | Quartz 定时任务，每天凌晨1点执行 | ✅ 完成 |
+| 5 | 楼层树形查询全量接口 | 返回所有楼层→房间→床位三级结构 | ✅ 完成 |
+| 6 | 护理等级 Redis 缓存 | listAll 接口带缓存，增删改时清除缓存 | ✅ 完成 |
+| 7 | 健康评估 PDF 上传 | OSS 集成，支持健康评估报告上传 | ✅ 完成 |
+
+**入住申请 8 步流程**:
+1. 校验老人是否已入住（身份证号查重）
+2. 校验床位是否空闲
+3. 更新床位状态为已入住
+4. 新增/更新老人信息
+5. 新增合同（自动创建）
+6. 新增入住记录
+7. 新增入住配置
+8. 保存家属列表
+
+**定时任务**:
+- **ContractStatusJob**: 每天凌晨2点扫描合同表，将到期合同状态更新为已到期
+- **ReservationExpireJob**: 每天凌晨1点扫描预约表，将过期预约状态更新为已取消
+
+**新增文件**:
+- Entity: NursingCheckInConfig.java
+- VO: NursingFloorTreeVO.java
+- DTO: CheckInApplyDto.java
+- Mapper: NursingCheckInConfigMapper.java、NursingFloorTreeMapper.java
+- Service: INursingCheckInConfigService.java、INursingFloorTreeService.java
+- Job: ContractStatusJob.java、ReservationExpireJob.java
 
 ***
 

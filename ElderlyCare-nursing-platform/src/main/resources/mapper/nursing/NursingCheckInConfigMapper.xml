@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tong.nursing.mapper.NursingCheckInConfigMapper">
+
+    <resultMap type="NursingCheckInConfig" id="NursingCheckInConfigResult">
+        <result property="id"               column="id"               />
+        <result property="checkInId"        column="check_in_id"      />
+        <result property="nursingLevelId"   column="nursing_level_id" />
+        <result property="nursingLevelName" column="nursing_level_name" />
+        <result property="feeStartDate"     column="fee_start_date"   />
+        <result property="feeEndDate"       column="fee_end_date"     />
+        <result property="deposit"          column="deposit"          />
+        <result property="nursingFee"       column="nursing_fee"      />
+        <result property="bedFee"           column="bed_fee"          />
+        <result property="insurancePayment" column="insurance_payment" />
+        <result property="governmentSubsidy" column="government_subsidy" />
+        <result property="otherFees"        column="other_fees"       />
+        <result property="sortOrder"        column="sort_order"       />
+        <result property="createTime"       column="create_time"      />
+        <result property="updateTime"       column="update_time"      />
+        <result property="remark"           column="remark"           />
+    </resultMap>
+
+    <sql id="selectNursingCheckInConfigVo">
+        select id, check_in_id, nursing_level_id, nursing_level_name, fee_start_date, fee_end_date,
+               deposit, nursing_fee, bed_fee, insurance_payment, government_subsidy, other_fees,
+               sort_order, create_time, update_time, remark
+        from nursing_check_in_config
+    </sql>
+
+    <select id="selectNursingCheckInConfigList" parameterType="NursingCheckInConfig" resultMap="NursingCheckInConfigResult">
+        <include refid="selectNursingCheckInConfigVo"/>
+        <where>
+            <if test="checkInId != null "> and check_in_id = #{checkInId}</if>
+            <if test="nursingLevelId != null "> and nursing_level_id = #{nursingLevelId}</if>
+        </where>
+        order by sort_order asc, id desc
+    </select>
+
+    <select id="selectNursingCheckInConfigById" parameterType="Long" resultMap="NursingCheckInConfigResult">
+        <include refid="selectNursingCheckInConfigVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectNursingCheckInConfigByCheckInId" parameterType="Long" resultMap="NursingCheckInConfigResult">
+        <include refid="selectNursingCheckInConfigVo"/>
+        where check_in_id = #{checkInId}
+    </select>
+
+    <insert id="insertNursingCheckInConfig" parameterType="NursingCheckInConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into nursing_check_in_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="checkInId != null">check_in_id,</if>
+            <if test="nursingLevelId != null">nursing_level_id,</if>
+            <if test="nursingLevelName != null and nursingLevelName != ''">nursing_level_name,</if>
+            <if test="feeStartDate != null">fee_start_date,</if>
+            <if test="feeEndDate != null">fee_end_date,</if>
+            <if test="deposit != null">deposit,</if>
+            <if test="nursingFee != null">nursing_fee,</if>
+            <if test="bedFee != null">bed_fee,</if>
+            <if test="insurancePayment != null">insurance_payment,</if>
+            <if test="governmentSubsidy != null">government_subsidy,</if>
+            <if test="otherFees != null">other_fees,</if>
+            <if test="sortOrder != null">sort_order,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+            create_time,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="checkInId != null">#{checkInId},</if>
+            <if test="nursingLevelId != null">#{nursingLevelId},</if>
+            <if test="nursingLevelName != null and nursingLevelName != ''">#{nursingLevelName},</if>
+            <if test="feeStartDate != null">#{feeStartDate},</if>
+            <if test="feeEndDate != null">#{feeEndDate},</if>
+            <if test="deposit != null">#{deposit},</if>
+            <if test="nursingFee != null">#{nursingFee},</if>
+            <if test="bedFee != null">#{bedFee},</if>
+            <if test="insurancePayment != null">#{insurancePayment},</if>
+            <if test="governmentSubsidy != null">#{governmentSubsidy},</if>
+            <if test="otherFees != null">#{otherFees},</if>
+            <if test="sortOrder != null">#{sortOrder},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+            sysdate(),
+        </trim>
+    </insert>
+
+    <update id="updateNursingCheckInConfig" parameterType="NursingCheckInConfig">
+        update nursing_check_in_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="checkInId != null">check_in_id = #{checkInId},</if>
+            <if test="nursingLevelId != null">nursing_level_id = #{nursingLevelId},</if>
+            <if test="nursingLevelName != null and nursingLevelName != ''">nursing_level_name = #{nursingLevelName},</if>
+            <if test="feeStartDate != null">fee_start_date = #{feeStartDate},</if>
+            <if test="feeEndDate != null">fee_end_date = #{feeEndDate},</if>
+            <if test="deposit != null">deposit = #{deposit},</if>
+            <if test="nursingFee != null">nursing_fee = #{nursingFee},</if>
+            <if test="bedFee != null">bed_fee = #{bedFee},</if>
+            <if test="insurancePayment != null">insurance_payment = #{insurancePayment},</if>
+            <if test="governmentSubsidy != null">government_subsidy = #{governmentSubsidy},</if>
+            <if test="otherFees != null">other_fees = #{otherFees},</if>
+            <if test="sortOrder != null">sort_order = #{sortOrder},</if>
+            <if test="remark != null and remark != ''">remark = #{remark},</if>
+            update_time = sysdate(),
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteNursingCheckInConfigById" parameterType="Long">
+        delete from nursing_check_in_config where id = #{id}
+    </delete>
+
+    <delete id="deleteNursingCheckInConfigByIds" parameterType="Long">
+        delete from nursing_check_in_config where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteNursingCheckInConfigByCheckInId" parameterType="Long">
+        delete from nursing_check_in_config where check_in_id = #{checkInId}
+    </delete>
+</mapper>

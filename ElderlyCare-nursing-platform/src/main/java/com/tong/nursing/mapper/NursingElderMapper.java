@@ -58,4 +58,12 @@ public interface NursingElderMapper
      * @return 结果
      */
     public int deleteNursingElderByIds(Long[] ids);
+
+    /**
+     * 根据身份证号查询老人信息
+     *
+     * @param idCard 身份证号
+     * @return 老人信息
+     */
+    public NursingElder selectElderByIdCard(String idCard);
 }

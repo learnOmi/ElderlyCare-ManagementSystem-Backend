@@ -75,6 +75,17 @@ public class NursingFloorServiceImpl implements INursingFloorService
     }
 
     /**
+     * 查询所有楼层树形结构（含房间和床位）
+     *
+     * @return 楼层树形结构列表
+     */
+    @Override
+    public List<FloorTreeVO> selectAllFloorTree()
+    {
+        return nursingFloorMapper.selectAllFloorTree();
+    }
+
+    /**
      * 新增楼层
      *
      * @param nursingFloor 楼层

@@ -58,4 +58,12 @@ public interface NursingElderFamilyMapper
      * @return 结果
      */
     public int deleteNursingElderFamilyByIds(Long[] ids);
+
+    /**
+     * 根据老人ID删除老人家属关联
+     *
+     * @param elderId 老人ID
+     * @return 结果
+     */
+    public int deleteNursingElderFamilyByElderId(Long elderId);
 }

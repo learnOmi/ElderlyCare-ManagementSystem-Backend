@@ -85,4 +85,9 @@ public class NursingHealthAssessment extends BaseEntity
     /** 护理等级名称（查询用） */
     @ApiModelProperty("护理等级名称")
     private String levelName;
+
+    /** 评估报告PDF路径（OSS URL） */
+    @Excel(name = "评估报告PDF路径")
+    @ApiModelProperty("评估报告PDF路径（OSS URL）")
+    private String reportPath;
 }

@@ -24,6 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
         <result property="elderName"    column="elder_name"    />
         <result property="levelName"    column="level_name"    />
+        <result property="reportPath"    column="report_path"    />
     </resultMap>
 
     <sql id="selectNursingHealthAssessmentVo">
@@ -32,7 +33,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                a.total_score, a.suggested_level, a.assessment_result, a.status,
                a.create_by, a.update_by, a.remark, a.create_time, a.update_time,
                e.name as elder_name,
-               l.name as level_name
+               l.name as level_name,
+               a.report_path
         from nursing_health_assessment a
         left join nursing_elder e on a.elder_id = e.id
         left join nursing_level l on a.suggested_level = l.id
@@ -74,6 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createBy != null">create_by,</if>
             <if test="remark != null">remark,</if>
             <if test="createTime != null">create_time,</if>
+            <if test="reportPath != null">report_path,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="elderId != null">#{elderId},</if>
@@ -90,6 +93,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createBy != null">#{createBy},</if>
             <if test="remark != null">#{remark},</if>
             <if test="createTime != null">#{createTime},</if>
+            <if test="reportPath != null">#{reportPath},</if>
         </trim>
     </insert>
 
@@ -110,6 +114,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="remark != null">remark = #{remark},</if>
+            <if test="reportPath != null">report_path = #{reportPath},</if>
         </trim>
         where id = #{id}
     </update>

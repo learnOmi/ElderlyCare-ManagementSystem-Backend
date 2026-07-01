@@ -96,4 +96,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <delete id="deleteNursingElderFamilyByElderId" parameterType="Long">
+        delete from nursing_elder_family where elder_id = #{elderId}
+    </delete>
 </mapper>

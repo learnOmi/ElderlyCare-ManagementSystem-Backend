@@ -2,8 +2,11 @@ package com.tong.nursing.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import com.tong.common.utils.DateUtils;
+import com.tong.nursing.constant.NursingConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import com.tong.nursing.mapper.NursingLevelMapper;
 import com.tong.nursing.domain.NursingLevel;
@@ -36,6 +39,9 @@ public class NursingLevelServiceImpl implements INursingLevelService
 
     @Autowired
     private NursingProjectMapper nursingProjectMapper;
+
+    @Autowired
+    private RedisTemplate<Object, Object> redisTemplate;
 
     /**
      * 查询护理等级
@@ -128,14 +134,30 @@ public class NursingLevelServiceImpl implements INursingLevelService
     }
 
     /**
-     * 查询全部护理等级（下拉框/全量列表用）
+     * 查询全部护理等级（下拉框/全量列表用），带Redis缓存
      *
      * @return 护理等级集合
      */
     @Override
+    @SuppressWarnings("unchecked")
     public List<NursingLevel> selectNursingLevelAll()
     {
-        return nursingLevelMapper.selectNursingLevelAll();
+        String cacheKey = NursingConstants.REDIS_LEVEL_ALL_KEY;
+        
+        List<NursingLevel> cachedList = (List<NursingLevel>) redisTemplate.opsForValue().get(cacheKey);
+        if (cachedList != null && !cachedList.isEmpty())
+        {
+            return cachedList;
+        }
+        
+        List<NursingLevel> list = nursingLevelMapper.selectNursingLevelAll();
+        
+        if (list != null && !list.isEmpty())
+        {
+            redisTemplate.opsForValue().set(cacheKey, list, NursingConstants.REDIS_CACHE_EXPIRE_MINUTES, TimeUnit.MINUTES);
+        }
+        
+        return list;
     }
 
     /**
@@ -148,7 +170,12 @@ public class NursingLevelServiceImpl implements INursingLevelService
     public int insertNursingLevel(NursingLevel nursingLevel)
     {
         nursingLevel.setCreateTime(DateUtils.getNowDate());
-        return nursingLevelMapper.insertNursingLevel(nursingLevel);
+        int result = nursingLevelMapper.insertNursingLevel(nursingLevel);
+        if (result > 0)
+        {
+            clearLevelCache();
+        }
+        return result;
     }
 
     /**
@@ -161,7 +188,12 @@ public class NursingLevelServiceImpl implements INursingLevelService
     public int updateNursingLevel(NursingLevel nursingLevel)
     {
         nursingLevel.setUpdateTime(DateUtils.getNowDate());
-        return nursingLevelMapper.updateNursingLevel(nursingLevel);
+        int result = nursingLevelMapper.updateNursingLevel(nursingLevel);
+        if (result > 0)
+        {
+            clearLevelCache();
+        }
+        return result;
     }
 
     /**
@@ -173,7 +205,12 @@ public class NursingLevelServiceImpl implements INursingLevelService
     @Override
     public int deleteNursingLevelByIds(Integer[] ids)
     {
-        return nursingLevelMapper.deleteNursingLevelByIds(ids);
+        int result = nursingLevelMapper.deleteNursingLevelByIds(ids);
+        if (result > 0)
+        {
+            clearLevelCache();
+        }
+        return result;
     }
 
     /**
@@ -185,6 +222,19 @@ public class NursingLevelServiceImpl implements INursingLevelService
     @Override
     public int deleteNursingLevelById(Integer id)
     {
-        return nursingLevelMapper.deleteNursingLevelById(id);
+        int result = nursingLevelMapper.deleteNursingLevelById(id);
+        if (result > 0)
+        {
+            clearLevelCache();
+        }
+        return result;
+    }
+
+    /**
+     * 清除护理等级缓存
+     */
+    private void clearLevelCache()
+    {
+        redisTemplate.delete(NursingConstants.REDIS_LEVEL_ALL_KEY);
     }
 }
