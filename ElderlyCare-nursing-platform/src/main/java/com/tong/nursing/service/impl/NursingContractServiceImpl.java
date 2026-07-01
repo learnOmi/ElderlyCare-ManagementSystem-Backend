@@ -1,9 +1,12 @@
 package com.tong.nursing.service.impl;
 
 import java.util.List;
+import com.tong.common.exception.ServiceException;
 import com.tong.common.utils.DateUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import com.tong.nursing.mapper.NursingContractMapper;
 import com.tong.nursing.domain.NursingContract;
 import com.tong.nursing.service.INursingContractService;
@@ -92,5 +95,43 @@ public class NursingContractServiceImpl implements INursingContractService
     public int deleteNursingContractById(Long id)
     {
         return nursingContractMapper.deleteNursingContractById(id);
+    }
+
+    /**
+     * 合同续签
+     * 创建新合同，复制原合同信息，更新开始日期、结束日期、状态为已签订
+     *
+     * @param id 原合同ID
+     * @param contract 续签信息
+     * @return 新合同ID
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public Long renewContract(Long id, NursingContract contract)
+    {
+        NursingContract original = nursingContractMapper.selectNursingContractById(id);
+        if (original == null)
+        {
+            throw new ServiceException("原合同不存在");
+        }
+
+        NursingContract newContract = new NursingContract();
+        BeanUtils.copyProperties(original, newContract);
+        newContract.setId(null);
+        newContract.setContractNo(null);
+        newContract.setSignDate(DateUtils.getNowDate());
+        newContract.setStartDate(contract.getStartDate());
+        newContract.setEndDate(contract.getEndDate());
+        newContract.setStatus(1);
+        newContract.setCreateTime(DateUtils.getNowDate());
+
+        int rows = nursingContractMapper.insertNursingContract(newContract);
+        if (rows > 0)
+        {
+            original.setStatus(3);
+            nursingContractMapper.updateNursingContract(original);
+            return newContract.getId();
+        }
+        throw new ServiceException("合同续签失败");
     }
 }

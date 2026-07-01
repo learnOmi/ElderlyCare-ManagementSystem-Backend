@@ -8,15 +8,14 @@ import java.util.Date;
 
 /**
  * 护理排班视图对象
- * 包含老人姓名、护理项目名称、护理员姓名等展示字段
  *
  * @author Tong
- * @date 2026-06-29
+ * @date 2026-07-01
  */
 @Data
 @ApiModel(value = "NursingArrangeVO", description = "护理排班视图对象")
-public class NursingArrangeVO
-{
+public class NursingArrangeVO {
+
     /** 排班ID */
     @ApiModelProperty("排班ID")
     private Long id;
@@ -32,6 +31,10 @@ public class NursingArrangeVO
     /** 老人姓名 */
     @ApiModelProperty("老人姓名")
     private String elderName;
+
+    /** 床位编号 */
+    @ApiModelProperty("床位编号")
+    private String bedNumber;
 
     /** 护理项目ID */
     @ApiModelProperty("护理项目ID")
@@ -66,7 +69,7 @@ public class NursingArrangeVO
     private String executeBy;
 
     /** 状态(0:待执行, 1:已执行, 2:已取消, 3:执行中) */
-    @ApiModelProperty("状态(0:待执行, 1:已执行, 2:已取消, 3:执行中)")
+    @ApiModelProperty("状态")
     private Integer status;
 
     /** 取消原因 */

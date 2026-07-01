@@ -66,6 +66,10 @@ public class NursingElder extends BaseEntity
     @ApiModelProperty("护理等级ID")
     private Long levelId;
 
+    /** 护理计划ID */
+    @ApiModelProperty("护理计划ID")
+    private Long planId;
+
     /** 入住床位ID */
     @ApiModelProperty("入住床位ID")
     private Long bedId;
@@ -87,6 +91,10 @@ public class NursingElder extends BaseEntity
     /** 护理等级名称（非数据库字段） */
     @ApiModelProperty("护理等级名称")
     private String levelName;
+
+    /** 护理计划名称（非数据库字段） */
+    @ApiModelProperty("护理计划名称")
+    private String planName;
 
     /** 床位名称（非数据库字段） */
     @ApiModelProperty("床位名称")

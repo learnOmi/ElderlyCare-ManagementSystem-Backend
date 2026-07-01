@@ -87,4 +87,8 @@ public class NursingContract extends BaseEntity
     @JsonFormat(pattern = "yyyy-MM-dd")
     @ApiModelProperty("终止日期")
     private Date terminateDate;
+
+    /** 护理等级名称（查询用） */
+    @ApiModelProperty("护理等级名称")
+    private String levelName;
 }

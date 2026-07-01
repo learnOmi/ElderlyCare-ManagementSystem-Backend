@@ -101,4 +101,20 @@ public class NursingAlertData extends BaseEntity
     /** 告警级别名称（查询用） */
     @ApiModelProperty("告警级别名称")
     private String levelName;
+
+    /** 处理人姓名（查询用） */
+    @ApiModelProperty("处理人姓名")
+    private String handlerName;
+
+    /** 告警内容 */
+    @ApiModelProperty("告警内容")
+    private String alertContent;
+
+    /** 监测值 */
+    @ApiModelProperty("监测值")
+    private String monitorValue;
+
+    /** 单位 */
+    @ApiModelProperty("单位")
+    private String unit;
 }

@@ -80,13 +80,58 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!-- 各护理等级老人数量 -->
     <select id="selectLevelElderCount" resultType="com.tong.nursing.vo.DashboardCategoryVO">
         SELECT
-            l.level_name AS name,
+            l.name AS name,
             COUNT(e.id) AS value
         FROM nursing_elder e
         LEFT JOIN nursing_level l ON e.level_id = l.id
         WHERE e.check_in_status = 1
-        GROUP BY l.id, l.level_name
+        GROUP BY l.id, l.name
         ORDER BY l.sort_order
+    </select>
+
+    <!-- 待处理入住申请数 -->
+    <select id="countPendingCheckIns" resultType="Integer">
+        SELECT COUNT(*) FROM nursing_check_in WHERE status = 0
+    </select>
+
+    <!-- 待续签合同数 -->
+    <select id="countContractRenew" resultType="Integer">
+        SELECT COUNT(*) FROM nursing_contract 
+        WHERE status = 2 AND end_date &lt;= DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+    </select>
+
+    <!-- 床位总数 -->
+    <select id="countTotalBeds" resultType="Integer">
+        SELECT COUNT(*) FROM nursing_bed
+    </select>
+
+    <!-- 今日服务数量 -->
+    <select id="countTodayService" resultType="Integer">
+        SELECT COUNT(*) FROM nursing_arrange 
+        WHERE plan_date = CURDATE() AND status &lt; 2
+    </select>
+
+    <!-- 最近N个月每日入住数量 -->
+    <select id="selectRecentMonthCheckInCount" resultType="java.util.HashMap">
+        SELECT
+            DATE_FORMAT(create_time, '%Y-%m') AS stat_month,
+            COUNT(*) AS cnt
+        FROM nursing_check_in
+        WHERE create_time &gt; DATE_SUB(NOW(), INTERVAL #{months} MONTH)
+          AND status = 2
+        GROUP BY DATE_FORMAT(create_time, '%Y-%m')
+        ORDER BY stat_month
+    </select>
+
+    <!-- 最近N天每日告警数量 -->
+    <select id="selectRecentDayAlertCount" resultType="java.util.HashMap">
+        SELECT
+            DATE(alert_time) AS stat_date,
+            COUNT(*) AS cnt
+        FROM nursing_alert_data
+        WHERE alert_time BETWEEN DATE_SUB(CURDATE(), INTERVAL #{days} - 1 DAY) AND CURDATE()
+        GROUP BY DATE(alert_time)
+        ORDER BY stat_date
     </select>
 
 </mapper>

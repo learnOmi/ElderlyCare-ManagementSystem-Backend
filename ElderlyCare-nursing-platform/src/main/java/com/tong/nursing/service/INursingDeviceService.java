@@ -58,4 +58,38 @@ public interface INursingDeviceService
      * @return 结果
      */
     public int deleteNursingDeviceById(Long id);
+
+    /**
+     * 查询设备实时数据
+     *
+     * @param id 设备主键
+     * @return 设备实时数据
+     */
+    public com.tong.nursing.vo.DeviceDataVO getDeviceData(Long id);
+
+    /**
+     * 绑定设备到床位
+     *
+     * @param deviceId 设备ID
+     * @param bedId 床位ID
+     * @return 结果
+     */
+    public int bindDeviceBed(Long deviceId, Long bedId);
+
+    /**
+     * 解绑设备
+     *
+     * @param id 设备主键
+     * @return 结果
+     */
+    public int unbindDevice(Long id);
+
+    /**
+     * 查询设备历史数据
+     *
+     * @param id 设备主键
+     * @param query 查询条件
+     * @return 设备历史数据列表
+     */
+    public List<com.tong.nursing.vo.DeviceDataVO> getDeviceHistory(Long id, com.tong.nursing.domain.NursingDevice query);
 }

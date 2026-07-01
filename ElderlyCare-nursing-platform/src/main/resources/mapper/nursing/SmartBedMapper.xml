@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tong.nursing.mapper.SmartBedMapper">
+
+    <resultMap type="com.tong.nursing.vo.SmartBedVO" id="SmartBedResult">
+        <result property="id"           column="id"            />
+        <result property="bedNumber"    column="bed_no"        />
+        <result property="floorId"      column="floor_id"      />
+        <result property="floorName"    column="floor_name"    />
+        <result property="roomId"       column="room_id"       />
+        <result property="roomName"     column="room_name"     />
+        <result property="elderId"      column="elder_id"      />
+        <result property="elderName"    column="elder_name"    />
+        <result property="deviceId"     column="device_id"     />
+        <result property="deviceNo"     column="device_no"     />
+        <result property="deviceOnline" column="device_online" />
+        <result property="bedStatus"    column="bed_status"    />
+        <result property="heartRate"    column="heart_rate"    />
+        <result property="breathRate"   column="breath_rate"   />
+        <result property="bodyTemp"     column="body_temp"     />
+        <result property="sleepStatus"  column="sleep_status"  />
+        <result property="updateTime"   column="update_time"   />
+    </resultMap>
+
+    <!--
+        智能床位列表查询
+        关联：nursing_bed b → nursing_room r → nursing_floor f
+              nursing_bed b → nursing_elder e（通过 e.bed_id = b.id）
+              nursing_bed b → nursing_device d（通过 d.bed_id = b.id）
+        bed_status 计算规则：
+          - 无设备绑定或设备离线 → '3'（空闲）
+          - 有设备且有老人 → '0'（在床，暂时默认）
+          - 实时数据后续接入后可细化
+    -->
+    <sql id="selectSmartBedVo">
+        select b.id, b.bed_no, r.id as room_id, r.room_no as room_name,
+               f.id as floor_id, f.name as floor_name,
+               e.id as elder_id, e.name as elder_name,
+               d.id as device_id, d.device_no,
+               case when d.id is null then 0
+                    when d.status = 1 then 1
+                    else 0
+               end as device_online,
+               case when d.id is null or d.status != 1 then '3'
+                    when e.id is not null then '0'
+                    else '3'
+               end as bed_status,
+               b.update_time
+        from nursing_bed b
+        left join nursing_room r on b.room_id = r.id
+        left join nursing_floor f on r.floor_id = f.id
+        left join nursing_elder e on e.bed_id = b.id
+        left join nursing_device d on d.bed_id = b.id
+    </sql>
+
+    <select id="selectSmartBedList" parameterType="map" resultMap="SmartBedResult">
+        <include refid="selectSmartBedVo"/>
+        <where>
+            <if test="floorId != null"> and f.id = #{floorId}</if>
+            <if test="bedStatus != null and bedStatus != ''">
+                <choose>
+                    <!-- 空闲：无设备或设备离线 -->
+                    <when test="bedStatus == '3'">
+                        and (d.id is null or d.status != 1)
+                    </when>
+                    <!-- 在床：有设备且设备在线且有老人 -->
+                    <when test="bedStatus == '0'">
+                        and d.id is not null and d.status = 1 and e.id is not null
+                    </when>
+                    <!-- 离床：有设备且设备在线但无老人 -->
+                    <when test="bedStatus == '1'">
+                        and d.id is not null and d.status = 1 and e.id is null
+                    </when>
+                </choose>
+            </if>
+        </where>
+        order by f.name, r.room_no, b.bed_no
+    </select>
+
+    <select id="selectSmartBedById" parameterType="Long" resultMap="SmartBedResult">
+        <include refid="selectSmartBedVo"/>
+        where b.id = #{id}
+    </select>
+
+    <select id="selectBedStatusOverview" resultType="java.util.Map">
+        select
+            sum(case when d.id is not null and d.status = 1 and e.id is not null then 1 else 0 end) as onBed,
+            sum(case when d.id is not null and d.status = 1 and e.id is null then 1 else 0 end) as offBed,
+            sum(case when d.id is null or d.status != 1 then 1 else 0 end) as empty,
+            sum(case when d.id is not null and d.status = 1 then 1 else 0 end) as online,
+            count(*) as total
+        from nursing_bed b
+        left join nursing_elder e on e.bed_id = b.id
+        left join nursing_device d on d.bed_id = b.id
+    </select>
+
+</mapper>

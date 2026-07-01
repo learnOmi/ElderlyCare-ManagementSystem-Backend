@@ -185,4 +185,17 @@ public class NursingDashboardServiceImpl implements INursingDashboardService
         vo.setSeries(series);
         return vo;
     }
+
+    /**
+     * 获取待办事项统计
+     */
+    @Override
+    public DashboardStatVO getBacklog()
+    {
+        DashboardStatVO vo = new DashboardStatVO();
+        vo.setAlertPendingCount(nursingDashboardMapper.countPendingAlerts());
+        vo.setCheckInPendingCount(nursingDashboardMapper.countPendingCheckIns());
+        vo.setContractRenewCount(nursingDashboardMapper.countContractRenew());
+        return vo;
+    }
 }

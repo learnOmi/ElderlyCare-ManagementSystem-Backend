@@ -83,4 +83,15 @@ public class NursingDashboardController
     {
         return R.ok(nursingDashboardService.getRadarData());
     }
+
+    /**
+     * 待办事项统计
+     */
+    @PreAuthorize("@ss.hasPermi('nursing:dashboard:query')")
+    @ApiOperation(value = "待办事项统计", notes = "返回待处理告警、待处理入住申请、待续签合同数量")
+    @GetMapping("/backlog")
+    public R<DashboardStatVO> backlog()
+    {
+        return R.ok(nursingDashboardService.getBacklog());
+    }
 }

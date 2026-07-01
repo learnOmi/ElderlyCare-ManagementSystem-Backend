@@ -63,4 +63,16 @@ public class NursingBed extends BaseEntity
     /** 楼层名称（查询用） */
     @ApiModelProperty("楼层名称")
     private String floorName;
+
+    /** 老人姓名（查询用） */
+    @ApiModelProperty("老人姓名")
+    private String elderName;
+
+    /** 设备名称（查询用） */
+    @ApiModelProperty("设备名称")
+    private String deviceName;
+
+    /** 设备ID（查询用） */
+    @ApiModelProperty("设备ID")
+    private Long deviceId;
 }

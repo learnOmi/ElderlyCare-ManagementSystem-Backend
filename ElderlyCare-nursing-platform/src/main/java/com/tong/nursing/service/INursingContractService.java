@@ -58,4 +58,13 @@ public interface INursingContractService
      * @return 结果
      */
     public int deleteNursingContractById(Long id);
+
+    /**
+     * 合同续签
+     *
+     * @param id 原合同ID
+     * @param contract 续签信息（包含新的开始日期、结束日期等）
+     * @return 新合同ID
+     */
+    public Long renewContract(Long id, NursingContract contract);
 }

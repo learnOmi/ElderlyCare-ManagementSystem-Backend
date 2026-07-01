@@ -92,4 +92,20 @@ public interface INursingAlertDataService
      * @return 结果
      */
     public int deleteNursingAlertDataById(Long id);
+
+    /**
+     * 批量处理告警
+     *
+     * @param ids 告警ID数组
+     * @param handleResult 处理结果
+     * @return 结果
+     */
+    public int batchHandleAlert(Long[] ids, String handleResult);
+
+    /**
+     * 查询未处理告警数量
+     *
+     * @return 未处理告警数量
+     */
+    public int getUnhandleCount();
 }

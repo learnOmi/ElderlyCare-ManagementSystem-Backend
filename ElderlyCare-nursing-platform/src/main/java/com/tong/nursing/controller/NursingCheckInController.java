@@ -18,6 +18,7 @@ import com.tong.common.constant.HttpStatus;
 import com.tong.common.core.controller.BaseController;
 import com.tong.common.enums.BusinessType;
 import com.tong.nursing.domain.NursingCheckIn;
+import com.tong.nursing.dto.CheckInApplyDto;
 import com.tong.nursing.service.INursingCheckInService;
 import com.tong.nursing.vo.NursingCheckInDetailVO;
 import com.tong.nursing.vo.NursingCheckInListVO;
@@ -97,6 +98,19 @@ public class NursingCheckInController extends BaseController
     public R<NursingCheckIn> getInfo(@PathVariable("id") Long id)
     {
         return R.ok(nursingCheckInService.selectNursingCheckInById(id));
+    }
+
+    /**
+     * 申请入住（完整业务流程）
+     */
+    @PreAuthorize("@ss.hasPermi('nursing:checkIn:add')")
+    @Log(title = "入住申请", businessType = BusinessType.INSERT)
+    @ApiOperation(value = "申请入住", notes = "执行完整入住申请流程：校验老人入住状态→校验床位状态→更新床位状态→新增/更新老人信息→新增合同→新增入住记录→新增入住配置→保存家属列表")
+    @PostMapping("/apply")
+    public R<Long> apply(@RequestBody CheckInApplyDto dto)
+    {
+        Long checkInId = nursingCheckInService.apply(dto);
+        return R.ok(checkInId);
     }
 
     /**

@@ -76,4 +76,48 @@ public interface NursingDashboardMapper
      * @return 等级-数量映射列表
      */
     public List<DashboardCategoryVO> selectLevelElderCount();
+
+    /**
+     * 统计待处理入住申请数
+     *
+     * @return 待处理入住申请数
+     */
+    public Integer countPendingCheckIns();
+
+    /**
+     * 统计待续签合同数
+     *
+     * @return 待续签合同数
+     */
+    public Integer countContractRenew();
+
+    /**
+     * 统计床位总数
+     *
+     * @return 床位总数
+     */
+    public Integer countTotalBeds();
+
+    /**
+     * 统计今日服务数量
+     *
+     * @return 今日服务数量
+     */
+    public Integer countTodayService();
+
+    /**
+     * 查询最近N个月每日入住数量
+     *
+     * @param months 月份数
+     * @return 月份-数量映射列表
+     */
+    public List<Map<String, Object>> selectRecentMonthCheckInCount(Integer months);
+
+    /**
+     * 查询最近N天每日告警数量
+     *
+     * @param days 天数
+     * @return 日期-数量映射列表
+     */
+    public List<Map<String, Object>> selectRecentDayAlertCount(Integer days);
 }

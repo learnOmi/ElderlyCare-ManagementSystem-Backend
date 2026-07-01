@@ -19,11 +19,14 @@ import com.tong.common.core.controller.BaseController;
 import com.tong.common.enums.BusinessType;
 import com.tong.nursing.domain.NursingDevice;
 import com.tong.nursing.service.INursingDeviceService;
+import com.tong.nursing.vo.DeviceDataVO;
 import com.tong.common.utils.poi.ExcelUtil;
 import com.tong.common.core.domain.R;
 import com.tong.common.core.page.TableDataInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 
 /**
@@ -123,5 +126,84 @@ public class NursingDeviceController extends BaseController
     {
         int rows = nursingDeviceService.deleteNursingDeviceByIds(ids);
         return rows > 0 ? R.ok() : R.fail();
+    }
+
+    /**
+     * 查询设备实时数据
+     */
+    @PreAuthorize("@ss.hasPermi('nursing:device:list')")
+    @ApiOperation(value = "查询设备实时数据", notes = "返回设备的实时监测数据")
+    @ApiImplicitParam(name = "id", value = "设备ID", required = true, dataType = "Long", paramType = "path")
+    @GetMapping("/data/{id}")
+    public R<DeviceDataVO> getData(@PathVariable("id") Long id)
+    {
+        return R.ok(nursingDeviceService.getDeviceData(id));
+    }
+
+    /**
+     * 绑定设备到床位
+     */
+    @PreAuthorize("@ss.hasPermi('nursing:device:edit')")
+    @Log(title = "设备", businessType = BusinessType.UPDATE)
+    @ApiOperation(value = "绑定设备到床位", notes = "将设备绑定到指定床位")
+    @PutMapping("/bindBed")
+    public R<Void> bindBed(@RequestBody BindBedDto dto)
+    {
+        int rows = nursingDeviceService.bindDeviceBed(dto.getDeviceId(), dto.getBedId());
+        return rows > 0 ? R.ok() : R.fail();
+    }
+
+    /**
+     * 解绑设备
+     */
+    @PreAuthorize("@ss.hasPermi('nursing:device:edit')")
+    @Log(title = "设备", businessType = BusinessType.UPDATE)
+    @ApiOperation(value = "解绑设备", notes = "解除设备与床位的绑定")
+    @ApiImplicitParam(name = "id", value = "设备ID", required = true, dataType = "Long", paramType = "path")
+    @PutMapping("/unbind/{id}")
+    public R<Void> unbind(@PathVariable("id") Long id)
+    {
+        int rows = nursingDeviceService.unbindDevice(id);
+        return rows > 0 ? R.ok() : R.fail();
+    }
+
+    /**
+     * 查询设备历史数据
+     */
+    @PreAuthorize("@ss.hasPermi('nursing:device:list')")
+    @ApiOperation(value = "查询设备历史数据", notes = "返回设备的历史监测数据")
+    @ApiImplicitParam(name = "id", value = "设备ID", required = true, dataType = "Long", paramType = "path")
+    @GetMapping("/history/{id}")
+    public R<List<DeviceDataVO>> getHistory(@PathVariable("id") Long id, NursingDevice query)
+    {
+        return R.ok(nursingDeviceService.getDeviceHistory(id, query));
+    }
+
+    /**
+     * 绑定设备到床位DTO
+     */
+    @ApiModel(value = "BindBedDto", description = "绑定设备到床位DTO")
+    public static class BindBedDto {
+        @ApiModelProperty("设备ID")
+        private Long deviceId;
+
+        @ApiModelProperty("床位ID")
+        private Long bedId;
+
+        public Long getDeviceId() {
+            return deviceId;
+        }
+
+        public void setDeviceId(Long deviceId) {
+            this.deviceId = deviceId;
+        }
+
+        public Long getBedId() {
+            return bedId;
+        }
+
+        public void setBedId(Long bedId) {
+            this.bedId = bedId;
+        }
     }
 }

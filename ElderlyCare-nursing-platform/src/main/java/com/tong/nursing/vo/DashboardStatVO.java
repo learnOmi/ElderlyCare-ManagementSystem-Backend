@@ -30,4 +30,12 @@ public class DashboardStatVO
     /** 待处理告警数 */
     @ApiModelProperty("待处理告警数")
     private Integer alertPendingCount;
+
+    /** 待处理入住申请数 */
+    @ApiModelProperty("待处理入住申请数")
+    private Integer checkInPendingCount;
+
+    /** 待续签合同数 */
+    @ApiModelProperty("待续签合同数")
+    private Integer contractRenewCount;
 }

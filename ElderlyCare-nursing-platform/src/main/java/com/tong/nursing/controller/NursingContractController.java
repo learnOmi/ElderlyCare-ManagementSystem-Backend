@@ -123,4 +123,18 @@ public class NursingContractController extends BaseController
         int rows = nursingContractService.deleteNursingContractByIds(ids);
         return rows > 0 ? R.ok() : R.fail();
     }
+
+    /**
+     * 合同续签
+     */
+    @PreAuthorize("@ss.hasPermi('nursing:contract:edit')")
+    @Log(title = "合同", businessType = BusinessType.UPDATE)
+    @ApiOperation(value = "合同续签", notes = "根据原合同ID创建新合同，更新开始日期和结束日期，原合同状态改为已到期")
+    @ApiImplicitParam(name = "id", value = "原合同ID", required = true, dataType = "Long", paramType = "path")
+    @PutMapping("/renew/{id}")
+    public R<Long> renew(@PathVariable("id") Long id, @RequestBody NursingContract contract)
+    {
+        Long newId = nursingContractService.renewContract(id, contract);
+        return R.ok(newId);
+    }
 }

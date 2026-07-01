@@ -207,4 +207,40 @@ public class NursingAlertDataServiceImpl implements INursingAlertDataService
         String dateStr = sdf.format(new Date());
         return "ALT-" + dateStr + "-" + String.format("%03d", 1);
     }
+
+    /**
+     * 批量处理告警
+     *
+     * @param ids 告警ID数组
+     * @param handleResult 处理结果
+     * @return 结果
+     */
+    @Override
+    public int batchHandleAlert(Long[] ids, String handleResult)
+    {
+        int count = 0;
+        for (Long id : ids)
+        {
+            try
+            {
+                count += handleAlert(id, handleResult);
+            }
+            catch (BaseException e)
+            {
+                continue;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * 查询未处理告警数量
+     *
+     * @return 未处理告警数量
+     */
+    @Override
+    public int getUnhandleCount()
+    {
+        return nursingAlertDataMapper.selectUnhandleCount();
+    }
 }

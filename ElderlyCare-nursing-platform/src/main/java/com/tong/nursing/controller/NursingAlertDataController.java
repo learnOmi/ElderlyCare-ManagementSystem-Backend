@@ -27,6 +27,8 @@ import com.tong.common.core.page.TableDataInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 
 /**
@@ -156,5 +158,57 @@ public class NursingAlertDataController extends BaseController
     {
         int rows = nursingAlertDataService.deleteNursingAlertDataByIds(ids);
         return rows > 0 ? R.ok() : R.fail();
+    }
+
+    /**
+     * 批量处理告警
+     */
+    @PreAuthorize("@ss.hasPermi('nursing:alertData:edit')")
+    @Log(title = "告警数据", businessType = BusinessType.UPDATE)
+    @ApiOperation(value = "批量处理告警", notes = "批量将告警状态改为已处理")
+    @PutMapping("/batchHandle")
+    public R<Integer> batchHandle(@RequestBody BatchHandleDto dto)
+    {
+        int count = nursingAlertDataService.batchHandleAlert(dto.getIds(), dto.getHandleResult());
+        return R.ok(count);
+    }
+
+    /**
+     * 查询未处理告警数量
+     */
+    @PreAuthorize("@ss.hasPermi('nursing:alertData:list')")
+    @ApiOperation(value = "查询未处理告警数量", notes = "返回未处理状态的告警数量")
+    @GetMapping("/unhandleCount")
+    public R<Integer> getUnhandleCount()
+    {
+        return R.ok(nursingAlertDataService.getUnhandleCount());
+    }
+
+    /**
+     * 批量处理告警DTO
+     */
+    @ApiModel(value = "BatchHandleDto", description = "批量处理告警DTO")
+    public static class BatchHandleDto {
+        @ApiModelProperty("告警ID数组")
+        private Long[] ids;
+
+        @ApiModelProperty("处理结果")
+        private String handleResult;
+
+        public Long[] getIds() {
+            return ids;
+        }
+
+        public void setIds(Long[] ids) {
+            this.ids = ids;
+        }
+
+        public String getHandleResult() {
+            return handleResult;
+        }
+
+        public void setHandleResult(String handleResult) {
+            this.handleResult = handleResult;
+        }
     }
 }

@@ -43,8 +43,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="alertTime"    column="alert_time"    />
         <result property="handleTime"    column="handle_time"    />
         <result property="handleBy"    column="handle_by"    />
+        <result property="handlerName"    column="handler_name"    />
         <result property="handleResult"    column="handle_result"    />
         <result property="status"    column="status"    />
+        <result property="alertContent"    column="alert_content"    />
+        <result property="monitorValue"    column="monitor_value"    />
+        <result property="unit"    column="unit"    />
         <result property="remark"    column="remark"    />
         <result property="createTime"    column="create_time"    />
     </resultMap>
@@ -54,15 +58,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                a.rule_id, a.alert_type, a.level, a.alert_value,
                a.alert_time, a.handle_time, a.handle_by, a.handle_result,
                a.status, a.create_by, a.update_by, a.remark, a.create_time, a.update_time,
+               a.alert_content, a.monitor_value, a.unit,
                e.name as elder_name,
                b.bed_no as bed_name,
                d.device_name,
-               r.rule_name
+               r.rule_name,
+               u.nick_name as handler_name
         from nursing_alert_data a
         left join nursing_elder e on a.elder_id = e.id
         left join nursing_bed b on a.bed_id = b.id
         left join nursing_device d on a.device_id = d.id
         left join nursing_alert_rule r on a.rule_id = r.id
+        left join sys_user u on a.handle_by = u.user_id
     </sql>
 
     <select id="selectAlertDataVOList" parameterType="NursingAlertData" resultMap="NursingAlertDataVOResult">
@@ -174,5 +181,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <select id="selectUnhandleCount" resultType="Integer">
+        select count(*) from nursing_alert_data where status = 0
+    </select>
 
 </mapper>

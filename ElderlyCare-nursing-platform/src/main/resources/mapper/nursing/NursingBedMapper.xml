@@ -15,6 +15,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="roomNo"    column="room_no"    />
         <result property="floorId"    column="floor_id"    />
         <result property="floorName"    column="floor_name"    />
+        <result property="elderName"    column="elder_name"    />
+        <result property="deviceName"    column="device_name"    />
+        <result property="deviceId"    column="device_id"    />
         <result property="createBy"    column="create_by"    />
         <result property="updateBy"    column="update_by"    />
         <result property="remark"    column="remark"    />
@@ -27,10 +30,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                b.create_by, b.update_by, b.remark, b.create_time, b.update_time,
                r.room_no,
                r.floor_id,
-               f.name as floor_name
+               f.name as floor_name,
+               e.name as elder_name,
+               d.device_name,
+               d.id as device_id
         from nursing_bed b
         left join nursing_room r on b.room_id = r.id
         left join nursing_floor f on r.floor_id = f.id
+        left join nursing_elder e on e.bed_id = b.id
+        left join nursing_device d on d.bed_id = b.id
     </sql>
 
     <select id="selectNursingBedList" parameterType="NursingBed" resultMap="NursingBedResult">
@@ -109,4 +117,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <select id="selectNursingBedOptions" resultMap="NursingBedResult">
+        <include refid="selectNursingBedVo"/>
+        where b.status = 1
+        order by b.bed_no asc
+    </select>
 </mapper>

@@ -166,4 +166,15 @@ public class NursingBedServiceImpl implements INursingBedService
         }
         return nursingBedMapper.deleteNursingBedById(id);
     }
+
+    /**
+     * 查询床位下拉列表（不分页，用于表单选择）
+     *
+     * @return 床位集合
+     */
+    @Override
+    public List<NursingBed> selectNursingBedOptions()
+    {
+        return nursingBedMapper.selectNursingBedOptions();
+    }
 }

@@ -28,6 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="arrangeNo"    column="arrange_no"    />
         <result property="elderId"    column="elder_id"    />
         <result property="elderName"    column="elder_name"    />
+        <result property="bedNumber"    column="bed_number"    />
         <result property="projectId"    column="project_id"    />
         <result property="projectName"    column="project_name"    />
         <result property="nurseId"    column="nurse_id"    />
@@ -48,10 +49,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                a.status, a.cancel_reason,
                a.create_by, a.update_by, a.remark, a.create_time, a.update_time,
                e.name as elder_name,
+               b.bed_no as bed_number,
                p.name as project_name,
                u.nick_name as nurse_name
         from nursing_arrange a
         left join nursing_elder e on a.elder_id = e.id
+        left join nursing_bed b on e.bed_id = b.id
         left join nursing_project p on a.project_id = p.id
         left join sys_user u on a.nurse_id = u.user_id
     </sql>

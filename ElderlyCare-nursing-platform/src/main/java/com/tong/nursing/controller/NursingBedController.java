@@ -124,4 +124,15 @@ public class NursingBedController extends BaseController
         int rows = nursingBedService.deleteNursingBedByIds(ids);
         return rows > 0 ? R.ok() : R.fail();
     }
+
+    /**
+     * 查询床位下拉列表（不分页，用于表单选择）
+     */
+    @PreAuthorize("@ss.hasPermi('nursing:bed:list')")
+    @ApiOperation(value = "查询床位下拉列表", notes = "返回全部启用的床位列表，不分页，用于表单选择")
+    @GetMapping("/options")
+    public R<List<NursingBed>> getOptions()
+    {
+        return R.ok(nursingBedService.selectNursingBedOptions());
+    }
 }

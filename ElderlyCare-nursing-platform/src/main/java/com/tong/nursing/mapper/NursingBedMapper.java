@@ -58,4 +58,11 @@ public interface NursingBedMapper
      * @return 结果
      */
     public int deleteNursingBedByIds(Long[] ids);
+
+    /**
+     * 查询床位下拉列表（不分页）
+     *
+     * @return 床位集合
+     */
+    public List<NursingBed> selectNursingBedOptions();
 }

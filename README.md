@@ -47,6 +47,8 @@ ElderlyCare (父工程)
 | 合同管理 | 合同签订、合同变更、合同终止 | nursing_ | 已实现 |
 | 预约管理 | 来访预约、入住预约、参观预约 | nursing_ | 已实现 |
 | 仪表盘 | 统计卡片、趋势图、饼图、柱状图、雷达图 | nursing_ | 已实现 |
+| 智能床位 | 床位+设备+老人综合监控视图 | nursing_ | 已实现 |
+| 数据大屏 | 统计大屏（入住趋势、等级分布、楼层入住率等） | nursing_ | 已实现 |
 
 ## 数据库表清单（nursing_ 前缀，共19张）
 
@@ -488,4 +490,47 @@ public R<NursingCheckInDetailVO> getDetail(@PathVariable("id") Long id) {
 - Job: ContractStatusJob.java、ReservationExpireJob.java
 
 ***
+
+### 第十阶段：前后端接口对齐与智能床位监控（已完成 ✅）
+
+**目标**: 修复前后端接口不匹配问题，补齐缺失接口，新增智能床位监控模块
+
+**背景**: 前端项目接入时发现多个 404 错误和字段不匹配问题，需对齐前后端接口规范
+
+**完成内容**:
+
+| 序号 | 功能组件 | 实现方式 | 状态 |
+|------|----------|----------|------|
+| 1 | Mapper XML 字段名修复 | Contract/Bed/SmartBed 的 SQL 字段与表结构对齐 | ✅ 完成 |
+| 2 | nursing_elder 扩展 plan_id | 实体 + Mapper XML + 建表脚本 + 修复脚本同步更新 | ✅ 完成 |
+| 3 | serveOldPeople 前端复用 | 删除重复后端模块，API 指向 /nursing/elder，字段适配 | ✅ 完成 |
+| 4 | serveArrange 前端复用 | API 指向 /nursing/arrange，字段与状态值适配 | ✅ 完成 |
+| 5 | 智能床位监控模块 | SmartBedVO + Mapper + Service + Controller，5表关联查询 | ✅ 完成 |
+| 6 | 数据库修复脚本 | nursing_table_fix.sql 汇总所有表结构变更 | ✅ 完成 |
+| 7 | 前端修复建议文档 | FRONTEND_FIX_RECOMMENDATION.md，含 P0/P1/P2 分级修复建议 | ✅ 完成 |
+
+**修复的 SQL 字段错误**:
+- `NursingContractMapper.xml`: `l.level_name` → `l.name as level_name`
+- `NursingBedMapper.xml`: `b.elder_id / b.device_id` → 反向关联 `e.bed_id = b.id / d.bed_id = b.id`
+- `SmartBedMapper.xml`: `r.room_name` → `r.room_no`，`f.floor_name` → `f.name`
+
+**智能床位监控模块**:
+- **无独立表**：关联查询 nursing_bed + nursing_room + nursing_floor + nursing_elder + nursing_device
+- **bedStatus 计算规则**：无设备/离线→空闲(3)，设备在线+有老人→在床(0)，设备在线+无老人→离床(1)
+- **接口**：列表、详情、实时数据、历史数据、状态概览（共5个接口）
+
+**新增文件**:
+- VO: SmartBedVO.java
+- Mapper: SmartBedMapper.java
+- XML: SmartBedMapper.xml
+- Service: ISmartBedService.java
+- ServiceImpl: SmartBedServiceImpl.java
+- Controller: SmartBedController.java
+- SQL: nursing_table_fix.sql
+- 文档: FRONTEND_FIX_RECOMMENDATION.md（前端目录下）
+
+**第十阶段难点与解决方案**:
+1. **业务重复识别** → serveOldPeople/serveArrange 与已有模块业务重叠，采用复用方案避免重复建设
+2. **字段名不一致** → 前端字段名与数据库表字段存在差异，SQL 中用别名适配，同时建表脚本同步补充缺失字段
+3. **智能床位综合视图** → 5 表 LEFT JOIN 一次查出，bed_status 通过 case when 动态计算
 

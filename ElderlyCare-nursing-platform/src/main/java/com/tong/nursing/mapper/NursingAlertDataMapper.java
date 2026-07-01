@@ -77,4 +77,11 @@ public interface NursingAlertDataMapper
      * @return 结果
      */
     public int deleteNursingAlertDataByIds(Long[] ids);
+
+    /**
+     * 查询未处理告警数量
+     *
+     * @return 未处理告警数量
+     */
+    public int selectUnhandleCount();
 }

@@ -8,15 +8,14 @@ import java.util.Date;
 
 /**
  * 告警数据视图对象
- * 包含老人姓名、床位名称、设备名称、规则名称等展示字段
  *
  * @author Tong
- * @date 2026-06-29
+ * @date 2026-07-01
  */
 @Data
 @ApiModel(value = "NursingAlertDataVO", description = "告警数据视图对象")
-public class NursingAlertDataVO
-{
+public class NursingAlertDataVO {
+
     /** 告警ID */
     @ApiModelProperty("告警ID")
     private Long id;
@@ -37,8 +36,8 @@ public class NursingAlertDataVO
     @ApiModelProperty("床位ID")
     private Long bedId;
 
-    /** 床位名称 */
-    @ApiModelProperty("床位名称")
+    /** 床位编号 */
+    @ApiModelProperty("床位编号")
     private String bedName;
 
     /** 设备ID */
@@ -58,20 +57,12 @@ public class NursingAlertDataVO
     private String ruleName;
 
     /** 告警类型 */
-    @ApiModelProperty("告警类型(0:离床, 1:坠床, 2:心率异常, 3:呼吸异常, 4:其他)")
+    @ApiModelProperty("告警类型")
     private Integer alertType;
 
-    /** 告警类型名称 */
-    @ApiModelProperty("告警类型名称")
-    private String alertTypeName;
-
     /** 告警级别 */
-    @ApiModelProperty("告警级别(0:一般, 1:重要, 2:紧急)")
+    @ApiModelProperty("告警级别")
     private Integer level;
-
-    /** 告警级别名称 */
-    @ApiModelProperty("告警级别名称")
-    private String levelName;
 
     /** 告警值 */
     @ApiModelProperty("告警值")
@@ -89,13 +80,29 @@ public class NursingAlertDataVO
     @ApiModelProperty("处理人")
     private String handleBy;
 
+    /** 处理人姓名 */
+    @ApiModelProperty("处理人姓名")
+    private String handlerName;
+
     /** 处理结果 */
     @ApiModelProperty("处理结果")
     private String handleResult;
 
     /** 状态 */
-    @ApiModelProperty("状态(0:未处理, 1:处理中, 2:已处理, 3:已忽略)")
+    @ApiModelProperty("状态")
     private Integer status;
+
+    /** 告警内容 */
+    @ApiModelProperty("告警内容")
+    private String alertContent;
+
+    /** 监测值 */
+    @ApiModelProperty("监测值")
+    private String monitorValue;
+
+    /** 单位 */
+    @ApiModelProperty("单位")
+    private String unit;
 
     /** 备注 */
     @ApiModelProperty("备注")

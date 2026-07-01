@@ -48,4 +48,11 @@ public interface INursingDashboardService
      * @return 雷达图数据
      */
     public DashboardRadarVO getRadarData();
+
+    /**
+     * 获取待办事项统计
+     *
+     * @return 待办事项统计数据
+     */
+    public DashboardStatVO getBacklog();
 }

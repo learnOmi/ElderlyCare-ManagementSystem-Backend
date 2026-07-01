@@ -15,6 +15,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="address"    column="address"    />
         <result property="avatar"    column="avatar"    />
         <result property="levelId"    column="level_id"    />
+        <result property="planId"    column="plan_id"    />
         <result property="bedId"    column="bed_id"    />
         <result property="checkInStatus"    column="check_in_status"    />
         <result property="healthStatus"    column="health_status"    />
@@ -25,16 +26,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
         <result property="remark"    column="remark"    />
         <result property="levelName"    column="level_name"    />
+        <result property="planName"    column="plan_name"    />
         <result property="bedName"    column="bed_name"    />
     </resultMap>
 
     <sql id="selectNursingElderVo">
         select e.id, e.name, e.gender, e.birthday, e.age, e.id_card, e.phone, e.address, e.avatar,
-               e.level_id, e.bed_id, e.check_in_status, e.health_status, e.status,
+               e.level_id, e.plan_id, e.bed_id, e.check_in_status, e.health_status, e.status,
                e.create_by, e.create_time, e.update_by, e.update_time, e.remark,
-               l.name as level_name, b.bed_no as bed_name
+               l.name as level_name, p.plan_name as plan_name, b.bed_no as bed_name
         from nursing_elder e
         left join nursing_level l on e.level_id = l.id
+        left join nursing_plan p on e.plan_id = p.id
         left join nursing_bed b on e.bed_id = b.id
     </sql>
 
@@ -71,6 +74,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="address != null">address,</if>
             <if test="avatar != null">avatar,</if>
             <if test="levelId != null">level_id,</if>
+            <if test="planId != null">plan_id,</if>
             <if test="bedId != null">bed_id,</if>
             <if test="checkInStatus != null">check_in_status,</if>
             <if test="healthStatus != null">health_status,</if>
@@ -91,6 +95,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="address != null">#{address},</if>
             <if test="avatar != null">#{avatar},</if>
             <if test="levelId != null">#{levelId},</if>
+            <if test="planId != null">#{planId},</if>
             <if test="bedId != null">#{bedId},</if>
             <if test="checkInStatus != null">#{checkInStatus},</if>
             <if test="healthStatus != null">#{healthStatus},</if>
@@ -115,6 +120,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="address != null">address = #{address},</if>
             <if test="avatar != null">avatar = #{avatar},</if>
             <if test="levelId != null">level_id = #{levelId},</if>
+            <if test="planId != null">plan_id = #{planId},</if>
             <if test="bedId != null">bed_id = #{bedId},</if>
             <if test="checkInStatus != null">check_in_status = #{checkInStatus},</if>
             <if test="healthStatus != null">health_status = #{healthStatus},</if>

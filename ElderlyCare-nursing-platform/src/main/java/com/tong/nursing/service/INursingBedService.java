@@ -58,4 +58,11 @@ public interface INursingBedService
      * @return 结果
      */
     public int deleteNursingBedById(Long id);
+
+    /**
+     * 查询床位下拉列表（不分页，用于表单选择）
+     *
+     * @return 床位集合
+     */
+    public List<NursingBed> selectNursingBedOptions();
 }
